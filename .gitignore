@@ -54,3 +54,7 @@ run
 out/
 
 
+
+venv/
+
+src/credentials\.json
