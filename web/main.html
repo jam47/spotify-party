@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <title>Spotify Party</title>
+  </head>
+  <body>
+    <div class="container-fluid" style="background:#ffffff; color:#191414;">
+      <div class="row">
+	<div class="col-12 col-md-4 p-0">
+	  <nav class="navbar" style="justify-content:flex-start; background:#191414;">
+
+
+	    <!-- Toggler/collapsibe Button -->
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+	      <span class="material-icons" style="color:#1db954">menu</span>
+	    </button>
+<span class="navbar-brand" style="color:#1db954">Spotify Party</span>
+
+	    <!-- Navbar links -->
+	    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+	      <ul class="navbar-nav">
+		<li class="nav-item" style="height:8px">
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" style="color:#1db954" href="#">Party 1</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" style="color:#1db954" href="#">Party 2</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" style="color:#1db954" href="#">Party 3</a>
+		</li> 
+	      </ul>
+	    </div> 
+	  </nav>
+	</div>
+	
+	<div class="p-0 col-12 col-md-8">
+	  <div style="height:56px; color:#1db954; background:#191414;">
+	    <!-- Button to Open the Modal -->
+<button type="button" class="btn btn-primary float-right" style="margin:9px;" data-toggle="modal" data-target="#myModal">
+  Add song
+</button>
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background:#191414; color:#1db954">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Add Song</h4>
+        <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body" style="background:#191414; color:#1db954">
+        <ul class="list-group">
+	  <li class="list-group-item" style="background:#1db954;color:#000000">Song <button type="button" class="btn btn-primary float-right">
+	      Add
+	    </button>
+	  </li>
+	</ul>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+	  </div>
+	  
+	  <ul class="list-group">
+	    <li class="list-group-item">First item <i class="material-icons float-right">thumb_up thumb_down</i></li>
+	    <li class="list-group-item">First item <i class="material-icons float-right">thumb_up thumb_down</i></li>
+	    <li class="list-group-item">First item <i class="material-icons float-right">thumb_up thumb_down</i></li>
+	  </ul> 
+	</div>
+      </div>
+    </div>
+</div>
+</body>
+</html>
