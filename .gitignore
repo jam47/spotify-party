@@ -54,3 +54,5 @@ run
 out/
 
 
+
+server/__pycache__/
