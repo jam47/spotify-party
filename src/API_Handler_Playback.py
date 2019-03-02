@@ -21,6 +21,7 @@ class PlaybackHandler:
 
     def remove_song(self, uri):
         assert self.check_playlist_exists(), "Playlist must exist before song can be removed"
+        self.sp.user_playlist_remove_all_occurrences_of_tracks(self.username, self.playlist_id, [uri])
 
     def create_playlist(self):
         if not self.check_playlist_exists():
