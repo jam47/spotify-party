@@ -2,7 +2,8 @@ class PartyRoom:
     DEFAULT_VOTES = 0
     def __init__(self):
         self.songList = []
-        self.currentlyPlayingSong
+        self.currentlyPlayingSong = NOne
+        self.isActive = True
 
     def addSong(self, jsonSong):
         votedSong = {
@@ -34,3 +35,6 @@ class PartyRoom:
         for song in songList:
             if (!song["played"])
                 return song["song"]
+
+    def isActive():
+        return isActive
