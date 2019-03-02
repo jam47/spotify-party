@@ -1,9 +1,11 @@
 import string
 import random
+import json
 
 partyIds = {}
 
-def parse(msg):
+def parse(strMsg):
+    msg = json.loads(strMsg)
     if (hosts[msg["partyid"]] in roomIds):
         switcher = {
             "addSong":addSong,
@@ -13,7 +15,7 @@ def parse(msg):
             "getSearchResults":getSearchResults
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
-        return function(msg["partyid"], msg["data"])
+        return json.dumps(function(msg["partyid"], msg["data"]))
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
@@ -24,6 +26,7 @@ def createRoom(partyid, data):
         if code not in partyIds:
             break
     partyIds[code] = Room(data["username"])
+    return {"rtype":"roomCode", "data":code}
 
 def closeRoom(partyid, data):
     partyIds.pop(partyid)
@@ -37,4 +40,7 @@ def startPlayback(partyid, data):
 
 
 def getSearchResults(partyid, data):
-    roomids[partyid]
+    sh = SearchHandler()
+    result = sh.search_track(data["searchTerm"])
+    result = sh.trim_result(result)
+    return {"rtype":"searchResult","data":result}
