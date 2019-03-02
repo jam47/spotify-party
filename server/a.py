@@ -1,7 +1,8 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template
+from flask_socketio import SocketIO, send, emit
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def return_index():
@@ -11,5 +12,15 @@ def return_index():
 def return_util():
     return render_template('util.js')
 
+app.debug = True
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
+
+
+@socketio.on('message')
+def handle_message(msg):
+    print(msg)
+    send(msg)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app)
