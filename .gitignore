@@ -58,3 +58,5 @@ out/
 venv/
 
 src/credentials\.json
+
+src/\.cache-alan21747
