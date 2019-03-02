@@ -23,3 +23,13 @@
 .thup, .thdn{
     cursor:pointer;
 }
+.results > li:hover{
+    background-color:#000000;
+}
+.tracks > li:hover{
+    background-color:#eeeeee;
+}
+.results > li{
+    background:#191414;
+    color:#1db954;
+}

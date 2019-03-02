@@ -6,12 +6,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="main.css">
     <script src="util.js"></script>
     <title>Spotify Party</title>
   </head>
-  <body onload="initialise()">
+  <body>
     <div class="container-fluid" style="background:#ffffff; color:#191414;">
       <div class="row">
 	<div class="col-12 col-md-4 p-0">
@@ -62,9 +63,9 @@
 		  </div>
 
 		  <!-- Modal body -->
-		  <div class="modal-body" style="background:#191414; color:#1db954">
-		    <ul class="list-group">
-		      <li class="list-group-item" style="background:#1db954;color:#000000">Song
+		  <div class="modal-body" style="background:#1db954; color:#191414">
+		    <ul class="list-group results">
+		      <li class="list-group-item">Song
 			<button type="button" class="btn btn-primary float-right">
 			  Add
 			</button>
@@ -82,7 +83,7 @@
 	    </div>
 	  </div>
 	  
-	  <ul class="list-group">
+	  <ul class="list-group tracks">
 	    <li class="list-group-item" id="41242421">First item
 	      <i class="material-icons float-right">
 		<span class="thup" onclick="upvote($(this))">
