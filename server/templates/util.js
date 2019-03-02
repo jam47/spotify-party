@@ -1,11 +1,11 @@
-let SERVER = "amc40.host.cs.st-andrews.ac.uk:30001"
 let resultsDiv = document.getElementById("results");
 function foo() {
   let text_message = document.getElementById("test-text");
   sendMessage(text_message.value);
 }
 
-let ws = new WebSocket("ws://" + SERVER); // Connect to page provider websocket
+let ws = new WebSocket("ws://" + location.host.split(":")[0] + ":30001"); // Connect to page provider websocket
+alert("ws://" + location.host.split(":")[0] + ":30001");
 function sendMessage(input) {
   if (ws.readyState = "OPEN") {
     ws.send(input); //TODO: Use JSON.stringify
