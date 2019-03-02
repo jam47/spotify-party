@@ -56,3 +56,5 @@ out/
 
 
 venv/
+
+src/credentials\.json
