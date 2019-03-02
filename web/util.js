@@ -1,8 +1,3 @@
-// let resultsDiv = document.getElementById("results");
-function sendtextElement() { //Obselete
-  let text_message = document.getElementById("test-text");
-  sendMessage(text_message.value)
-}
 function sendMessage(msg) {
   console.log("Sending: " + msg);
   socket.send(msg);
@@ -15,3 +10,42 @@ var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('message', function(msg) {
         console.log("Received: " + msg);
     });
+function upvote(e){
+    if (e.css("color") == "rgb(0, 255, 0)"){
+	e.css("color","#000000");
+	var obj = {
+	    songid : e.parent().attr("id"),
+	    vote : -1
+	}
+	var json = JSON.stringify(obj);
+    } else {
+	e.css("color","#00ff00");
+	var obj = {
+	    songid : e.parent().attr("id"),
+	    vote : 1
+	}
+	var json = JSON.stringify(obj);
+    }
+    sendMessage(json);
+    e.next().css("color","#000000");
+}
+function downvote(e){
+    if (e.css("color") == "rgb(255, 0, 0)"){
+	e.css("color","#000000");
+	var obj = {
+	    songid : e.parent().attr("id"),
+	    vote : 1
+	}
+	var json = JSON.stringify(obj);
+
+    } else {
+	e.css("color","#ff0000");
+	var obj = {
+	    songid : e.parent().attr("id"),
+	    vote : -1
+	}
+	var json = JSON.stringify(obj);
+    }
+    sendMessage(json);
+    e.prev().css("color", "#000000");
+}
