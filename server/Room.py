@@ -1,6 +1,7 @@
+from .API_Handler_Playback import PlaybackHandler
 
 class PartyRoom:
-    from ../src/API_Handler_Playback import PlaybackHandler
+
     DEFAULT_VOTES = 0
     def __init__(self, username):
         self.songList = []
@@ -10,34 +11,42 @@ class PartyRoom:
 
     def addSong(self, jsonSong):
         votedSong = {
-            "song":jsonSong,
-            "votes":0,
-            "played":false
+            "song": jsonSong,
+            "votes": 0,
+            "played": False
         }
 
         i = 0
-        while (songList[i]["votes"] > 0):
-            i++
-        songList.insert(i + 1, votedSong)
+        while self.songList[i]["votes"] > 0:
+            i += 1
+        self.songList.insert(i + 1, votedSong)
 
     def modifySongVotes(self, uri, voteModification):
         toModify = None
-        for song in songList:
-            if (song["song"]["uri"] == uri):
+        for song in self.songList:
+            if song["song"]["uri"] == uri:
                 toModify = song
         if (toModify != None):
-            songList.remove(toModify)
+            self.songList.remove(toModify)
             toModify["votes"] += voteModification
             newVotes = toModify["votes"]
             i = 0
-            while (songList[i]["votes"] > newVotes):
-                i++
-            songList.insert(i + 1, toModify)
+            while self.songList[i]["votes"] > newVotes:
+                i += 1
+            self.songList.insert(i + 1, toModify)
 
-    def getMostUpvotedNotPlayed():
-        for song in songList:
-            if (!song["played"])
+    def getMostUpvotedNotPlayedToPlay(self):
+        for song in self.songList:
+            if (not song["played"]):
+                song["Played"] = True
+                self.currentlyPlayingSong = song["song"]
                 return song["song"]
 
-    def isActive():
-        return isActive
+    def isActive(self):
+        return self.isActive
+
+    def setInactive(self):
+        self.isActive = False
+
+    def setCurrentlyPlayingSong(self, currentlyPlayingSong):
+        self.currentlyPlayingSong = currentlyPlayingSong

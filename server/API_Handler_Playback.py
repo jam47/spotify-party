@@ -4,6 +4,7 @@ import spotipy.util as util
 
 
 class PlaybackHandler:
+
     with open("credentials.json") as credentials_file:
         credentials = json.load(credentials_file)
 
