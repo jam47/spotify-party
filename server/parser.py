@@ -2,11 +2,13 @@ import string
 import random
 import time
 from .Room import PartyRoom
+import json
 
 partyids = {}
 
-def parse(msg):
-    if (msg["partyid"] in partyids):
+def parse(strMsg):
+    msg = json.loads(strMsg)
+    if (hosts[msg["partyid"]] in roomIds):
         switcher = {
             "addSong":addSong,
             "createRoom":createRoom,
@@ -15,7 +17,7 @@ def parse(msg):
             "getSearchResults":getSearchResults
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
-        return function(msg["partyid"], msg["data"])
+        return json.dumps(function(msg["partyid"], msg["data"]))
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
@@ -25,7 +27,8 @@ def createRoom(partyid, data):
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         if code not in partyids:
             break
-    partyids[code] = PartyRoom(data["username"])
+    partyIds[code] = Room(data["username"])
+    return {"rtype":"roomCode", "data":code}
 
 def closeRoom(partyid, data):
     partyids.pop(partyid)
@@ -43,7 +46,10 @@ def addVotes(self, partyid, uri, numberOfVotes):
 
 
 def getSearchResults(partyid, data):
-    partyids[partyid]
+    sh = SearchHandler()
+    result = sh.search_track(data["searchTerm"])
+    result = sh.trim_result(result)
+    return {"rtype":"searchResult","data":result}
 
 def deactivatePlaylist(self, partyid):
     partyids[partyid].setInactive()
