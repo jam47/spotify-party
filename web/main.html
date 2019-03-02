@@ -8,6 +8,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="main.css">
+    <script src="main.js"></script>
     <title>Spotify Party</title>
   </head>
   <body>
@@ -63,7 +64,8 @@
 		  <!-- Modal body -->
 		  <div class="modal-body" style="background:#191414; color:#1db954">
 		    <ul class="list-group">
-		      <li class="list-group-item" style="background:#1db954;color:#000000">Song <button type="button" class="btn btn-primary float-right">
+		      <li class="list-group-item" style="background:#1db954;color:#000000">Song
+			<button type="button" class="btn btn-primary float-right">
 			  Add
 			</button>
 		      </li>
@@ -81,18 +83,42 @@
 	  </div>
 	  
 	  <ul class="list-group">
-	    <li class="list-group-item">First item <i class="material-icons float-right"><span class="thup" onclick="$(this).css('color','#00ff00')">thumb_up</span> <span class="thdn" onclick="$(this).css('color','#ff0000')">thumb_down</span></i></li>
-	    <li class="list-group-item">First item <i class="material-icons float-right"><span class="thup" onclick="$(this).css('color','#00ff00')">thumb_up</span> <span class="thdn" onclick="$(this).css('color','#ff0000')">thumb_down</span></i></li>
-	    <li class="list-group-item">First item <i class="material-icons float-right"><span class="thup" onclick="$(this).css('color','#00ff00');">thumb_up</span> <span class="thdn" onclick="$(this).css('color','#ff0000')">thumb_down</span></i></li>
+	    <li class="list-group-item" id="41242421">First item
+	      <i class="material-icons float-right">
+		<span class="thup" onclick="upvote($(this))">
+		  thumb_up
+		</span>
+		<span class="thdn" onclick="downvote($(this))">
+		  thumb_down
+		</span>
+	      </i>
+	    </li>
+	    <li class="list-group-item" id="41242421">
+	      First item
+	      <i class="material-icons float-right">
+		<span class="thup" onclick="upvote($(this))">
+		  thumb_up
+		</span>
+		<span class="thdn" onclick="downvote($(this))">
+		  thumb_down
+		</span>
+	      </i>
+	    </li>
+	    <li class="list-group-item" id="41242421">
+	      First item
+	      <i class="material-icons float-right">
+		<span class="thup" onclick="upvote($(this))">
+		  thumb_up
+		</span>
+		<span class="thdn" onclick="downvote($(this))">
+		  thumb_down
+		</span>
+	      </i>
+	    </li>
 	  </ul> 
 	</div>
       </div>
     </div>
 </div>
-<script>
-  function upvote(){
-  
-  }
-</script>
 </body>
 </html>
