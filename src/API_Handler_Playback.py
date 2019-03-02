@@ -14,10 +14,13 @@ class PlaybackHandler:
         self.playlist_name = playlist_name
         self.sp = self.authenticate_user()
 
-    def add_song(self, uri):
+    def add_songs(self, uris):
         if not self.check_playlist_exists():
             self.create_playlist()
-        self.sp.user_playlist_add_tracks(self.username, self.playlist_id, [uri])
+        self.sp.user_playlist_add_tracks(self.username, self.playlist_id, uris)
+
+    def add_song(self, uri):
+        self.add_songs([uri])
 
     def remove_song(self, uri):
         assert self.check_playlist_exists(), "Playlist must exist before song can be removed"
@@ -27,6 +30,10 @@ class PlaybackHandler:
         if not self.check_playlist_exists():
             playlist = self.sp.user_playlist_create(self.username, self.playlist_name, False)
             self.playlist_id = playlist.get("id")
+
+    def delete_playlist(self):
+        assert self.check_playlist_exists(), "Playlist must exist before deletion"
+        self.sp.user_playlist_unfollow(self.username, self.playlist_id)
 
     def currently_playing_uri(self):
         return self.sp.currently_playing().get("item").get("uri")
