@@ -58,3 +58,7 @@ out/
 venv/
 
 src/credentials\.json
+
+server/env/
+
+server/__pycache__/
