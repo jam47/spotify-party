@@ -1,0 +1,87 @@
+{
+   'tracks':[
+      {
+         'name':'Holding Out for a Hero',
+         'artists':[
+            'Bonnie Tyler'
+         ],
+         'album':'Secret Dreams And Forbidden Fire',
+         'uri':'spotify:track:7L2eFj0KFJDmHTPMUL4ZxR'
+      },
+      {
+         'name':'Holding Out for a Hero',
+         'artists':[
+            'Bonnie Tyler'
+         ],
+         'album':"Footloose (15th Anniversary Collectors' Edition)",
+         'uri':'spotify:track:734Bm0wCyh215uaDkq1Aq0'
+      },
+      {
+         'name':'Holding Out for a Hero',
+         'artists':[
+            'Bonnie Tyler'
+         ],
+         'album':'The Very Best Of Bonnie Tyler',
+         'uri':'spotify:track:3oYxYV6cFaSRwgBpjXzhvS'
+      },
+      {
+         'name':'Holding Out for a Hero',
+         'artists':[
+            'Bonnie Tyler'
+         ],
+         'album':'Super Hits',
+         'uri':'spotify:track:61UU9qfuXmdFyqCSE7v5gz'
+      },
+      {
+         'name':'Holding out for a Hero',
+         'artists':[
+            'Elise Lieberth'
+         ],
+         'album':'Cover Letters from Elise',
+         'uri':'spotify:track:25IUD3Yp4auZ56WR5nAQ4b'
+      },
+      {
+         'name':'Holding Out for a Hero',
+         'artists':[
+            'Little V.'
+         ],
+         'album':'Holding Out for a Hero',
+         'uri':'spotify:track:76O1SNDtf2Y8bX9QdFHyww'
+      },
+      {
+         'name':'Holding Out For A Hero (Glee Cast Version)',
+         'artists':[
+            'Glee Cast'
+         ],
+         'album':'Glee: The Music, Season 4 Volume 1',
+         'uri':'spotify:track:1s2oaFmwwlQmhrsv4NrN0t'
+      },
+      {
+         'name':'Holding Out for a Hero - From the Trailer for "Vikings" - Series 2',
+         'artists':[
+            'Nothing But Thieves'
+         ],
+         'album':'Holding Out for a Hero (From the Trailer for "Vikings" - Series 2)',
+         'uri':'spotify:track:60Lov8vYmURSKoxxU8Upbc'
+      },
+      {
+         'name':'Holding Out for a Hero',
+         'artists':[
+            'Bonnie Tyler'
+         ],
+         'album':"Essential - 80's Love",
+         'uri':'spotify:track:004S8bMhFQjnbuqvdh6W71'
+      },
+      {
+         'name':'Holding Out For A Hero!',
+         'artists':[
+            'Jennifer Laura Thompson',
+            'Stacy Francis',
+            'Rosalind Brown',
+            'Kathy Deitch'
+         ],
+         'album':'Footloose: The Musical (Original Broadway Cast Recording)',
+         'uri':'spotify:track:2qClOURUoUvU8DTRptTC3T'
+      }
+   ]
+}
