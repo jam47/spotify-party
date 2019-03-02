@@ -1,8 +1,11 @@
-let resultsDiv = document.getElementById("results");
-function foo() {
+// let resultsDiv = document.getElementById("results");
+function sendtextElement() { //Obselete
   let text_message = document.getElementById("test-text");
-  console.log("Sending: " + text_message.value);
-  socket.send(text_message.value);
+  sendMessage(text_message.value)
+}
+function sendMessage(msg) {
+  console.log("Sending: " + msg);
+  socket.send(msg);
 }
 
 var socket = io.connect('http://' + document.domain + ':' + location.port);
