@@ -42,7 +42,7 @@ def startPlayback(partyid, data):
     room.setCurrentlyPlayingSong(firstSongToPlay)
 
 #Negative number of votes for downvotes
-def addVotes(self, partyid, uri, numberOfVotes):
+def addVotes(partyid, uri, numberOfVotes):
     partyids[partyid].modifySongVotes(uri, numberOfVotes)
 
 
@@ -52,8 +52,11 @@ def getSearchResults(partyid, data):
     result = sh.trim_result(result)
     return {"rtype":"searchResult","data":result}
 
-def deactivatePlaylist(self, partyid):
+def deactivatePlaylist(partyid):
     partyids[partyid].setInactive()
+
+def getCurrentSongsOrdered(partyid):
+    partyids[partyid].getCurrentUnplayedSongsInDescVotes()
 
 def mainLoop():
     while True:
