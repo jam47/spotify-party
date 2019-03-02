@@ -1,11 +1,12 @@
+
 class PartyRoom:
+    from ../src/API_Handler_Playback import PlaybackHandler
     DEFAULT_VOTES = 0
-
-
-    def __init__(self):
+    def __init__(self, username):
+        self.songList = []
         self.currentlyPlayingSong = None
         self.isActive = True
-        self.songList = []
+        self.playbackHandler = PlaybackHandler(username, "Spotify Party")
 
     def addSong(self, jsonSong):
         votedSong = {
