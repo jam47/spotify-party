@@ -7,8 +7,8 @@ class SearchHandler:
 
     def __init__(self):
         with open("credentials.json") as credentials_file:
-            self.credentials = json.load(credentials_file)
-        self.client_credentials_manager = SpotifyClientCredentials(client_id=credentials["client_id"],
+            credentials = json.load(credentials_file)
+        client_credentials_manager = SpotifyClientCredentials(client_id=credentials["client_id"],
                                                                    client_secret=credentials["client_secret"])
         self.sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
