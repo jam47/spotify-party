@@ -1,10 +1,11 @@
 import string
 import random
+from .Room import PartyRoom
 
-partyIds = {}
+partyids = {}
 
 def parse(msg):
-    if (hosts[msg["partyid"]] in roomIds):
+    if (msg["partyid"] in partyids):
         switcher = {
             "addSong":addSong,
             "createRoom":createRoom,
@@ -21,15 +22,15 @@ def addSong(partyid, data):
 def createRoom(partyid, data):
     while True:
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
-        if code not in partyIds:
+        if code not in partyids:
             break
-    partyIds[code] = Room(data["username"])
+    partyids[code] = PartyRoom(data["username"])
 
 def closeRoom(partyid, data):
-    partyIds.pop(partyid)
+    partyids.pop(partyid)
 
 def startPlayback(partyid, data):
-    room = roomIds[partyid]
+    room = partyids[partyid]
     room.playbackHandler.addSong(room.songList[0]["uri"])
     room.songList = room.songList[1:]
     room.playbackHandler.addSong(room.songList[0]["uri"])
@@ -37,4 +38,4 @@ def startPlayback(partyid, data):
 
 
 def getSearchResults(partyid, data):
-    roomids[partyid]
+    partyids[partyid]
