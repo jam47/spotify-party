@@ -39,7 +39,14 @@ class PartyRoom:
         for song in self.songList:
             if (not song["played"]):
                 song["Played"] = True
+                self.currentlyPlayingSong = song["song"]
                 return song["song"]
 
     def isActive(self):
         return self.isActive
+
+    def setInactive(self):
+        self.isActive = False
+
+    def setCurrentlyPlayingSong(self, currentlyPlayingSong):
+        self.currentlyPlayingSong = currentlyPlayingSong
