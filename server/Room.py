@@ -48,5 +48,14 @@ class PartyRoom:
     def setInactive(self):
         self.isActive = False
 
+    def getCurrentUnplayedSongsInDescVotes(self):
+        currentUnplayedSongs = []
+
+        for song in self.songList:
+            if song["played"] == False:
+                currentUnplayedSongs.append(song)
+
+        return currentUnplayedSongs
+
     def setCurrentlyPlayingSong(self, currentlyPlayingSong):
         self.currentlyPlayingSong = currentlyPlayingSong
