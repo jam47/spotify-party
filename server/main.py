@@ -3,7 +3,7 @@ import socket
 def listen():
     connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    connection.bind(('0.0.0.0', 30001))
+    connection.bind(('127.0.0.1', 30001))
     connection.listen(10)
     while True:
         current_connection, address = connection.accept()
