@@ -1,5 +1,4 @@
 import spotipy
-import pprint
 import json
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -18,6 +17,7 @@ def search_track(track_name):
 
 
 def trim_result(result):
+    assert type(result) is dict, "result must be a dictionary"
     trimmed_results = {'tracks': []}
     items = result.get("tracks")["items"]
     for track in items:
@@ -28,6 +28,3 @@ def trim_result(result):
         trimmed_results['tracks'].append(trimmed_track)
     return trimmed_results
 
-
-result = search_track("Holding out for a hero")
-print(trim_result(result))
