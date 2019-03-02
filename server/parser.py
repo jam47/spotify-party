@@ -3,12 +3,13 @@ import random
 import time
 from .Room import PartyRoom
 import json
+from .API_Handler_Search import SearchHandler
 
 partyids = {}
 
 def parse(strMsg):
     msg = json.loads(strMsg)
-    if (hosts[msg["partyid"]] in roomIds):
+    if msg["partyid"] in partyids:
         switcher = {
             "addSong":addSong,
             "createRoom":createRoom,
@@ -27,7 +28,7 @@ def createRoom(partyid, data):
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         if code not in partyids:
             break
-    partyIds[code] = Room(data["username"])
+    partyids[code] = PartyRoom(data["username"])
     return {"rtype":"roomCode", "data":code}
 
 def closeRoom(partyid, data):
