@@ -15,7 +15,8 @@ def parse(strMsg):
             "closeRoom":closeRoom,
             "startPlayback":startPlayback,
             "getSearchResults":getSearchResults,
-            "addVotes":addVotes
+            "addVotes":addVotes,
+            "getSongs":getCurrentSongsOrdered
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
         return json.dumps(function(msg["partyid"], msg["data"]))
@@ -55,7 +56,10 @@ def getSearchResults(partyid, data):
     return {"rtype":"searchResult","data":result}
 
 def getCurrentSongsOrdered(partyid):
-    partyids[partyid].getCurrentUnplayedSongsInDescVotes()
+    return {
+        "rtype":"songList",
+        "data":partyids[partyid].getCurrentUnplayedSongsInDescVotes()
+    }
 
 def mainLoop():
     while True:
