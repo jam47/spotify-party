@@ -8,6 +8,7 @@ class PartyRoom:
         self.currentlyPlayingSong = None
         self.isActive = True
         self.playbackHandler = PlaybackHandler(username, "Spotify Party")
+        self.username = username
 
     def addSong(self, jsonSong):
         votedSong = {

@@ -9,6 +9,7 @@ partyids = {}
 
 def parse(strMsg):
     msg = json.loads(strMsg)
+    print(partyids)
     if msg["partyid"] in partyids:
         switcher = {
             "addSong":addSong,
@@ -16,7 +17,7 @@ def parse(strMsg):
             "startPlayback":startPlayback,
             "getSearchResults":getSearchResults,
             "addVotes":addVotes,
-            "authenticate":proccessAuthenicationURL,
+            "auth":getRedirectUrl,
             "getSongs":getCurrentSongsOrdered
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
@@ -33,9 +34,6 @@ def createRoom(username):
         if code not in partyids:
             break
     partyids[code] = PartyRoom(username)
-    redirectUrl = getRedirectUrl()
-    if redirectUrl:
-        pass #TODO: send message
     return {
         "rtype":"roomCode",
         "data":code
@@ -48,6 +46,7 @@ def proccessAuthenicationURL(partyid, data):
     token = partyids[partyid].playbackHandler.get_auth_token(data["authURL"])
     if token:
         partyids[partyid].playbackHandler.authenticate(token)
+
 
 def startPlayback(partyid, data):
     room = partyids[partyid]
@@ -78,10 +77,16 @@ def mainLoop():
         updateAllPlaylists()
         time.sleep(1)
 
-def getRedirectUrl(partyid):
+def getRedirectUrl(partyid, data):
     if not partyids[partyid].playbackHandler.get_cached_token():
-        return partyids[partyid].playbackHandler.get_auth_url()
+        print(partyids[partyid].playbackHandler.get_auth_url())
+        url = partyids[partyid].playbackHandler.get_auth_url()
+        return {
+                "rtype":"auth",
+                "data":url
+            }
     else:
+        print("No Token!")
         return None
 
 
