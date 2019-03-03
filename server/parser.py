@@ -1,9 +1,9 @@
 import string
 import random
 import time
-from .Room import PartyRoom
+from Room import PartyRoom
 import json
-from .API_Handler_Search import SearchHandler
+from API_Handler_Search import SearchHandler
 
 partyids = {}
 

@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit
-import .parser
+import parser
 
 app = Flask(__name__)
 
