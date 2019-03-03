@@ -1,4 +1,4 @@
-from .API_Handler_Playback import PlaybackHandler
+from API_Handler_Playback import PlaybackHandler
 
 class PartyRoom:
 
