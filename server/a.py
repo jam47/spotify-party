@@ -7,11 +7,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def return_index():
-    return render_template('index.html')
+    return render_template('../web/main.html')
 
 @app.route('/util.js')
 def return_util():
-    return render_template('util.js')
+    return render_template('../web/util.js')
 
 app.debug = True
 app.config['SECRET_KEY'] = 'secret!'
@@ -20,8 +20,10 @@ socketio = SocketIO(app)
 
 @socketio.on('message')
 def handle_message(msg):
-    print(msg)
-    send(msg)
+    print("message: " + msg)
+    reply = parser.parse(msg)
+    print("reply: " + reply)
+    send(reply)
 
 if __name__ == '__main__':
     socketio.run(app)
