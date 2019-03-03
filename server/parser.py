@@ -16,26 +16,35 @@ def parse(strMsg):
             "startPlayback":startPlayback,
             "getSearchResults":getSearchResults,
             "addVotes":addVotes,
+            "authenticate":proccessAuthenicationURL
             "getSongs":getCurrentSongsOrdered
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
         return json.dumps(function(msg["partyid"], msg["data"]))
     if msg["rtype"] == "createRoom":
-        return json.dumps(createRoom())
+        return json.dumps(createRoom(msg["data"]))
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
 
-def createRoom():
+def createRoom(username):
     while True:
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         if code not in partyids:
             break
-    partyids[code] = PartyRoom(data["username"])
+    partyids[code] = PartyRoom(username)
+    redirectUrl = getRedirectUrl()
+    if redirectUrl:
+        #TODO: send message
     return {"rtype":"roomCode", "data":code}
 
 def closeRoom(partyid, data):
-    partyids[partyid].setInactive()
+    partyids[data["partyid"]].setInactive()
+
+def proccessAuthenicationURL(partyid, data):
+    token = partyids[partyid].playbackHandler.get_auth_token(data["authURL"])
+    if token:
+        partyids[partyid].playbackHandler.authenticate(token)
 
 def startPlayback(partyid, data):
     room = partyids[partyid]
@@ -65,6 +74,13 @@ def mainLoop():
     while True:
         updateAllPlaylists()
         time.sleep(1)
+
+def getRedirectUrl(partyid):
+    if not partyids[partyid].playbackHandler.get_cached_token():
+        return partyids[partyid].playbackHandler.get_auth_url()
+    else:
+        return None
+
 
 def updateAllPlaylists():
     for partyId in partyids:
