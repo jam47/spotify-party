@@ -57,5 +57,4 @@ class PlaybackHandler:
         return sp
 
 
-playbackHandler = PlaybackHandler("alan21747", "Spotipy Party")
-
+# playbackHandler = PlaybackHandler("alan21747", "Spotipy Party")
