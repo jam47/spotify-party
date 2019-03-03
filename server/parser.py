@@ -1,9 +1,9 @@
 import string
 import random
 import time
-from .Room import PartyRoom
+from Room import PartyRoom
 import json
-from .API_Handler_Search import SearchHandler
+from API_Handler_Search import SearchHandler
 
 partyids = {}
 
@@ -15,7 +15,8 @@ def parse(strMsg):
             "closeRoom":closeRoom,
             "startPlayback":startPlayback,
             "getSearchResults":getSearchResults,
-            "addVotes":addVotes
+            "addVotes":addVotes,
+            "getSongs":getCurrentSongsOrdered
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
         return json.dumps(function(msg["partyid"], msg["data"]))
@@ -44,8 +45,8 @@ def startPlayback(partyid, data):
     room.setCurrentlyPlayingSong(firstSongToPlay)
 
 #Negative number of votes for downvotes
-def addVotes(partyid, uri, numberOfVotes):
-    partyids[partyid].modifySongVotes(uri, numberOfVotes)
+def addVotes(partyid, data):
+    partyids[partyid].modifySongVotes(data["uri"], data["numberOfVotes"])
 
 
 def getSearchResults(partyid, data):
@@ -55,7 +56,10 @@ def getSearchResults(partyid, data):
     return {"rtype":"searchResult","data":result}
 
 def getCurrentSongsOrdered(partyid):
-    partyids[partyid].getCurrentUnplayedSongsInDescVotes()
+    return {
+        "rtype":"songList",
+        "data":partyids[partyid].getCurrentUnplayedSongsInDescVotes()
+    }
 
 def mainLoop():
     while True:

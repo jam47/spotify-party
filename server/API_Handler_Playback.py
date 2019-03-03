@@ -78,4 +78,3 @@ class PlaybackHandler:
         self.sp = spotipy.Spotify(auth=token)
 
 
-playbackHandler = PlaybackHandler("alan21747", "Spotipy Party")
