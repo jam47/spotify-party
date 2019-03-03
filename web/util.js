@@ -49,3 +49,18 @@ function downvote(e){
     sendMessage(json);
     e.prev().css("color", "#000000");
 }
+function start(){
+    var unimportant = setInterval(getSongs($("#parties").find(".active")), 2000);
+}
+function getSongs(e){
+    var obj = {
+	partyid : e.attr("id"),
+	rtype : "getSongs"
+    }
+    var json = JSON.stringify(obj);
+    sendMessage(json);
+}
+function setParty(e){
+    $(".active").removeClass("active");
+    e.addClass("active");
+}

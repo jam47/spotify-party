@@ -12,7 +12,7 @@
     <script src="util.js"></script>
     <title>Spotify Party</title>
   </head>
-  <body>
+  <body onload="start()">
     <div class="container-fluid" style="background:#ffffff; color:#191414;">
       <div class="row">
 	<div class="col-12 col-md-4 p-0">
@@ -20,24 +20,24 @@
 
 
 	    <!-- Toggler/collapsibe Button -->
-	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#parties">
 	      <span class="material-icons" style="color:#1db954">menu</span>
 	    </button>
 	    <span class="navbar-brand" style="color:#1db954">Spotify Party</span>
 
 	    <!-- Navbar links -->
-	    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+	    <div class="collapse navbar-collapse" id="parties">
 	      <ul class="navbar-nav">
 		<li class="nav-item" style="height:8px">
 		</li>
-		<li class="nav-item">
-		  <a class="nav-link" style="color:#1db954" href="#">Party 1</a>
+		<li class="nav-item" id="1"  onclick="setParty($(this))">
+		  <a class="nav-link" href="#">Party 1</a>
 		</li>
-		<li class="nav-item">
-		  <a class="nav-link" style="color:#1db954" href="#">Party 2</a>
+		<li class="nav-item" id="2" onclick="setParty($(this))">
+		  <a class="nav-link" href="#">Party 2</a>
 		</li>
-		<li class="nav-item">
-		  <a class="nav-link" style="color:#1db954" href="#">Party 3</a>
+		<li class="nav-item" id="3" onclick="setParty($(this))">
+		  <a class="nav-link" href="#">Party 3</a>
 		</li> 
 	      </ul>
 	    </div> 
@@ -95,7 +95,7 @@
 		</span>
 	      </i>
 	    </li>
-	    <li class="list-group-item" id="41242421">
+	    <li class="list-group-item" id="41262421">
 	      First item
 	      <i class="material-icons float-right">
 		<span class="thup" onclick="upvote($(this))">
@@ -106,7 +106,7 @@
 		</span>
 	      </i>
 	    </li>
-	    <li class="list-group-item" id="41242421">
+	    <li class="list-group-item" id="41247421">
 	      First item
 	      <i class="material-icons float-right">
 		<span class="thup" onclick="upvote($(this))">
