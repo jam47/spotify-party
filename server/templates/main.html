@@ -55,13 +55,21 @@
 
 		  <div class="modal-header">
 		    <h4 class="modal-title">Add Song</h4>
-		    <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>
+		    <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>	    
 		  </div>
 
 		  <div class="modal-body" style="background:#1db954; color:#191414">
-		    <ul class="list-group results">
-		      <li class="list-group-item">Song
-			<button type="button" class="btn btn-primary float-right">
+		    
+		    <div class="input-group mb-3">
+		      <input type="text" class="form-control" placeholder="Search">
+		      <div class="input-group-append" onclick="search($(this).prev().val())">
+			<button class="input-group-text material-icons btn-primary">search</button>
+		      </div>
+		    </div>
+		    
+		    <ul class="list-group" id="results">
+		      <li class="list-group-item" id="123">Song
+			<button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
 			  Add
 			</button>
 		      </li>

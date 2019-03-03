@@ -28,13 +28,13 @@
 .thup, .thdn{
     cursor:pointer;
 }
-.results > li:hover{
+#results > li:hover{
     background-color:#0a421e;
 }
 #tracks > li:hover{
     background-color:#eeeeee;
 }
-.results > li{
+#results > li{
     background:#191414;
     color:#1db954;
 }
@@ -48,4 +48,13 @@
 }
 #filler:hover{
     background:#191414 !important;
+}
+.input-group-append.active{
+    background:#1db954;
+}
+a{
+    color:#1db954;
+}
+a:hover{
+    color:#ffffff;
 }
