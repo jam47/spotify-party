@@ -16,7 +16,7 @@ def parse(strMsg):
             "startPlayback":startPlayback,
             "getSearchResults":getSearchResults,
             "addVotes":addVotes,
-            "authenticate":proccessAuthenicationURL
+            "authenticate":proccessAuthenicationURL,
             "getSongs":getCurrentSongsOrdered
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
