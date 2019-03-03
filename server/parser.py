@@ -12,18 +12,20 @@ def parse(strMsg):
     if msg["partyid"] in partyids:
         switcher = {
             "addSong":addSong,
-            "createRoom":createRoom,
             "closeRoom":closeRoom,
             "startPlayback":startPlayback,
-            "getSearchResults":getSearchResults
+            "getSearchResults":getSearchResults,
+            "addVotes":addVotes
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
         return json.dumps(function(msg["partyid"], msg["data"]))
+    if msg["rtype"] == "createRoom":
+        return json.dumps(createRoom())
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
 
-def createRoom(partyid, data):
+def createRoom():
     while True:
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         if code not in partyids:
