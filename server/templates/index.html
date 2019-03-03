@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Start/Join a Party</title>
+</head>
+<body>
+  <button type="button" class="CreatePartyBttn">Create Party</button>
+  <input type="text" placeholder="Enter Spotify Username" id="usernametxt">
+  <button type ="button" class="JoinPartyBttn">Join Party</button>
+  <input type="text" placeholder="Enter Party Code" id="partyCodetxt">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+  <script src="util.js"></script>
+  <script type="text/javascript">
+    function createParty() {
+      username = document.getElementById("usernametxt").value;
+      request = {
+        "rtype":"createRoom"
+        "data": username
+      };
+      sendMessage(JSON.stringify(request));
+    }
+    function joinParty() {
+      code = document.getElementById("partyCodetxt").value;
+
+    }
+  </script>
+</body>
+</html>
