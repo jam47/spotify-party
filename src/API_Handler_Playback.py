@@ -1,6 +1,7 @@
 import json
 import spotipy
 import spotipy.util as util
+from spotipy import oauth2
 
 
 class PlaybackHandler:
@@ -12,7 +13,10 @@ class PlaybackHandler:
         self.username = username
         self.playlist_id = None
         self.playlist_name = playlist_name
-        self.sp = self.authenticate_user()
+        self.sp = None
+        self.sp_oauth = oauth2.SpotifyOAuth(self.credentials["client_id"], self.credentials["client_id"],
+                                            self.credentials["redirect_url"],
+                                            scope=self.scope, cache_path=".cache" + username)
 
     def add_songs(self, uris):
         if not self.check_playlist_exists():
@@ -55,6 +59,22 @@ class PlaybackHandler:
         sp = spotipy.Spotify(auth=token)
         return sp
 
+    def get_cached_token(self):
+        return self.sp_oauth.get_cached_token()
+
+    def get_auth_url(self):
+        return self.sp_oauth.get_authorize_url()
+
+    def get_auth_token(self, response):
+        code = self.sp_oauth.parse_response_code(response)
+        token_info = self.sp_oauth.get_access_token(code)
+        if token_info:
+            return token_info["access_token"]
+        else:
+            return None
+
+    def authenticate(self, token):
+        self.sp = spotipy.Spotify(auth=token)
+
 
 playbackHandler = PlaybackHandler("alan21747", "Spotipy Party")
-
