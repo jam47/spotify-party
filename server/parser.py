@@ -35,8 +35,11 @@ def createRoom(username):
     partyids[code] = PartyRoom(username)
     redirectUrl = getRedirectUrl()
     if redirectUrl:
-        #TODO: send message
-    return {"rtype":"roomCode", "data":code}
+        pass #TODO: send message
+    return {
+        "rtype":"roomCode",
+        "data":code
+    }
 
 def closeRoom(partyid, data):
     partyids[data["partyid"]].setInactive()
