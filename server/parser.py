@@ -34,7 +34,7 @@ def createRoom():
     return {"rtype":"roomCode", "data":code}
 
 def closeRoom(partyid, data):
-    partyids.pop(partyid)
+    partyids[partyid].setInactive()
 
 def startPlayback(partyid, data):
     room = partyids[partyid]
@@ -53,9 +53,6 @@ def getSearchResults(partyid, data):
     result = sh.search_track(data["searchTerm"])
     result = sh.trim_result(result)
     return {"rtype":"searchResult","data":result}
-
-def deactivatePlaylist(partyid):
-    partyids[partyid].setInactive()
 
 def getCurrentSongsOrdered(partyid):
     partyids[partyid].getCurrentUnplayedSongsInDescVotes()
