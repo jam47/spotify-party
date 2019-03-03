@@ -7,11 +7,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def return_index():
-    return render_template('../web/main.html')
+    return render_template('index.html')
+
+@app.route('/main.html')
+def return_main():
+    return render_template('main.html')
 
 @app.route('/util.js')
 def return_util():
-    return render_template('../web/util.js')
+    return render_template('util.js')
+
+@app.route('/main.css')
+def return_css():
+    return render_template('main.css')
 
 app.debug = True
 app.config['SECRET_KEY'] = 'secret!'
