@@ -17,15 +17,10 @@
       <div class="row">
 	<div class="col-12 col-md-4 p-0">
 	  <nav class="navbar" style="justify-content:flex-start; background:#191414;">
-
-
-	    <!-- Toggler/collapsibe Button -->
 	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#parties">
 	      <span class="material-icons" style="color:#1db954">menu</span>
 	    </button>
 	    <span class="navbar-brand" style="color:#1db954">Spotify Party</span>
-
-	    <!-- Navbar links -->
 	    <div class="collapse navbar-collapse" id="parties">
 	      <ul class="navbar-nav">
 		<li class="nav-item" style="height:8px">
@@ -52,18 +47,17 @@
 		Add song
 	      </button>
 	    </div>
-	    <!-- The Modal -->
+
 	    <div class="modal" id="myModal">
 	      <div class="modal-dialog">
 		<div class="modal-content" style="background:#191414; color:#1db954">
 
-		  <!-- Modal Header -->
+
 		  <div class="modal-header">
 		    <h4 class="modal-title">Add Song</h4>
 		    <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>
 		  </div>
 
-		  <!-- Modal body -->
 		  <div class="modal-body" style="background:#1db954; color:#191414">
 		    <ul class="list-group results">
 		      <li class="list-group-item">Song
@@ -74,7 +68,6 @@
 		    </ul>
 		  </div>
 
-		  <!-- Modal footer -->
 		  <div class="modal-footer">
 		    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 		  </div>
@@ -84,7 +77,7 @@
 	    </div>
 	  </div>
 	  
-	  <ul class="list-group tracks">
+	  <ul class="list-group" id="tracks">
 	    <li class="list-group-item" id="41242421">First item
 	      <i class="material-icons float-right">
 		<span class="thup" onclick="upvote($(this))">
