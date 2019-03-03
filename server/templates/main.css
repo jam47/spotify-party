@@ -49,3 +49,6 @@
 #filler:hover{
     background:#191414 !important;
 }
+.input-group-append.active{
+    background:#1db954;
+}

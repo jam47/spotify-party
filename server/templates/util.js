@@ -29,10 +29,6 @@ function upvote(e){
 	    }
 	}
 	var json = JSON.stringify(obj);
-	if (e.attr("id")){
-	    sendMessage(json);
-	}
-	var json = JSON.stringify(obj);
     } else {
 	e.css("color","#00ff00");
 	var obj = {
@@ -47,7 +43,9 @@ function upvote(e){
 	}
 	var json = JSON.stringify(obj);
     }
-    sendMessage(json);
+    if (obj.partyid){
+	sendMessage(json);
+    }
     e.next().css("color","#000000");
 }
 function downvote(e){
@@ -75,7 +73,9 @@ function downvote(e){
 	}
 	var json = JSON.stringify(obj);
     }
-    sendMessage(json);
+     if (obj.partyid){
+	sendMessage(json);
+    }
     e.prev().css("color", "#000000");
 }
 function start(){
@@ -87,7 +87,7 @@ function getSongs(e){
 	rtype : "getSongs"
     }
     var json = JSON.stringify(obj);
-    if (e.attr("id")){
+    if (obj.partyid){
 	sendMessage(json);
     }
 }
@@ -133,4 +133,15 @@ ${i.name} - ${i.artists} (${i.album})
 	    </li>`
 	$("#results").append(html_out);
     }
+}
+function addSong(e){
+        var obj = {
+	    partyid : $("#parties").find(".active").attr("id"),
+	    rtype : "addSong",
+	    data : e
+	}
+	var json = JSON.stringify(obj);
+	if (obj.partyid){
+	    sendMessage(json);
+	}
 }
