@@ -13,6 +13,9 @@ socket.on('message', function(msg) {
     if (obj.rtype == "Playlist"){
 	setSongs(obj);
     }
+    if (obj.rtype == "searchResults"){
+	setSearch(obj);
+    }
 });
 function upvote(e){
     if (e.css("color") == "rgb(0, 255, 0)"){
@@ -107,4 +110,16 @@ ${i.name} - ${i.artists} (${i.album})
 	    </li>`
 	$("#tracks").append(html_out);
     }
+}
+function search(e){
+    	var obj = {
+	    partyid : $("#parties").find(".active").attr("id"),
+	    rtype : "getSearchResults",
+	    data : e
+	}
+	var json = JSON.stringify(obj);
+	if (obj.partyid){
+	    sendMessage(json);
+	}
+
 }
