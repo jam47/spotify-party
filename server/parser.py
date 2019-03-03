@@ -44,8 +44,8 @@ def startPlayback(partyid, data):
     room.setCurrentlyPlayingSong(firstSongToPlay)
 
 #Negative number of votes for downvotes
-def addVotes(partyid, uri, numberOfVotes):
-    partyids[partyid].modifySongVotes(uri, numberOfVotes)
+def addVotes(partyid, data):
+    partyids[partyid].modifySongVotes(data["uri"], data["numberOfVotes"])
 
 
 def getSearchResults(partyid, data):
