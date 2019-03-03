@@ -62,12 +62,12 @@
 		    
 		    <div class="input-group mb-3">
 		      <input type="text" class="form-control" placeholder="Search">
-		      <div class="input-group-append" onclick="search($(this).prev().value)">
+		      <div class="input-group-append" onclick="search($(this).prev().val())">
 			<span class="input-group-text material-icons">search</span>
 		      </div>
 		    </div>
 		    
-		    <ul class="list-group results">
+		    <ul class="list-group" id="results">
 		      <li class="list-group-item">Song
 			<button type="button" class="btn btn-primary float-right">
 			  Add

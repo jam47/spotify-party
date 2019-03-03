@@ -123,3 +123,14 @@ function search(e){
 	}
 
 }
+function setSearch(e){
+    for (i in e.data){
+	var html_out = `<li class='list-group-item' id='${i.uri}'>
+${i.name} - ${i.artists} (${i.album})
+			<button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
+			  Add
+			</button>
+	    </li>`
+	$("#results").append(html_out);
+    }
+}
