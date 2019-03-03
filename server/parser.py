@@ -62,11 +62,12 @@ def addVotes(partyid, data):
 
 def getSearchResults(partyid, data):
     sh = SearchHandler()
-    result = sh.search_track(data["searchTerm"])
+    result = sh.search_track(data)
     result = sh.trim_result(result)
     return {"rtype":"searchResult","data":result}
 
-def getCurrentSongsOrdered(partyid):
+def getCurrentSongsOrdered(partyid,data):
+    result = sh.search_track(data["searchTerm"])
     return {
         "rtype":"songList",
         "data":partyids[partyid].getCurrentUnplayedSongsInDescVotes()

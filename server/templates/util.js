@@ -1,3 +1,5 @@
+var idGlob;
+
 function sendMessage(msg) {
   console.log("Sending: " + msg);
   socket.send(msg);
@@ -8,12 +10,14 @@ socket.on('connect', function() {
   socket.emit('my event', {data: 'I\'m connected!'});
 });
 socket.on('message', function(msg) {
-    if (obj.rtype == "searchResults"){
-	setSearch(obj);
-    }
+  console.log(msg)
+  if (msg.rtype == "searchResults"){
+    setSearch(msg);
+  }
   console.log("Received: " + msg);
   var obj = JSON.parse(msg);
-  if (obj.rtype == "songList"){
+  if (obj.rtype == "searchResult"){
+    console.log("Setting songs")
     setSongs(obj);
   } else if (obj.rtype == "auth") {
     window.location = obj.data;
@@ -48,45 +52,47 @@ function upvote(e){
       }
     }
     if (obj.partyid){
-	sendMessage(json);
+      sendMessage(json);
     }
     e.next().css("color","#000000");
-}
-function downvote(e){
-  if (e.css("color") == "rgb(255, 0, 0)"){
-    e.css("color","#000000");
-    var obj = {
-      partyid : $("#parties").find(".active").attr("id"),
-      rtype : "sendVote",
-      data : {
-        songid : e.parent().parent().attr("id"),
-        vote : 1
+  }
+  function downvote(e){
+    if (e.css("color") == "rgb(255, 0, 0)"){
+      e.css("color","#000000");
+      var obj = {
+        partyid : $("#parties").find(".active").attr("id"),
+        rtype : "sendVote",
+        data : {
+          songid : e.parent().parent().attr("id"),
+          vote : 1
+        }
       }
+      var json = JSON.stringify(obj);
     }
-    var json = JSON.stringify(obj);
-
-  } else {
-    e.css("color","#ff0000");
-    var obj = {
-      partyid : $("#parties").find(".active").attr("id"),
-      rtype : "sendVote",
-      data : {
-        songid : e.parent().parent().attr("id"),
-        vote : -1 - (e.prev().css("color") == "rgb(0, 255, 0)")
+    else {
+      e.css("color","#ff0000");
+      var obj = {
+        partyid : $("#parties").find(".active").attr("id"),
+        rtype : "sendVote",
+        data : {
+          songid : e.parent().parent().attr("id"),
+          vote : -1 - (e.prev().css("color") == "rgb(0, 255, 0)")
+        }
       }
+      if (obj.partyid){
+        sendMessage(json);
+      }
+      e.prev().css("color", "#000000");
     }
-     if (obj.partyid){
-	sendMessage(json);
-    }
-    e.prev().css("color", "#000000");
+  }
 }
 function start(){
   var url_string = window.location.href
   var url = new URL(url_string);
   var id = url.searchParams.get("id");
-  if (id != undefined) {
-    idAttribute = $("#parties").find(".active").attr("id", id);
-    document.cookie = id;
+  if (id != undefined && id != null) {
+    // idAttribute = ;
+    document.cookie = "id="+id;
     authRequest = {
       "partyid":id,
       "rtype":"auth",
@@ -95,19 +101,26 @@ function start(){
     strAuthRequest = JSON.stringify(authRequest);
     sendMessage(strAuthRequest);
   } else {
-    $("#parties").find(".active").attr("id", document.cookie);
+    console.log("Setting ID");
+    var decodedCookie = decodeURIComponent(document.cookie);
+    console.log(decodedCookie)
+    id = decodedCookie.split("=")[1]
+    idGlob = id
+    $("#parties").find(".1").addClass("active");
+    $("#parties").find(".1").attr("id", id);
   }
   var unimportant = setInterval(() => {getSongs($("#parties").find(".active"))}, 2000);
 }
 function getSongs(e){
-    var obj = {
-	partyid : e.attr("id"),
-	rtype : "getSongs"
-    }
-    var json = JSON.stringify(obj);
-    if (obj.partyid){
-	sendMessage(json);
-    }
+  var obj = {
+    partyid : e.attr("id"),
+    rtype : "getSongs",
+    data : ""
+  }
+  var json = JSON.stringify(obj);
+  if (obj.getSongs){
+    sendMessage(json);
+  }
 }
 function setParty(e){
   $(".active").removeClass("active");
@@ -130,36 +143,36 @@ function setSongs(e){
   }
 }
 function search(e){
-    	var obj = {
-	    partyid : $("#parties").find(".active").attr("id"),
-	    rtype : "getSearchResults",
-	    data : e
-	}
-	var json = JSON.stringify(obj);
-	if (obj.partyid){
-	    sendMessage(json);
-	}
+  var obj = {
+    partyid : idGlob,
+    rtype : "getSearchResults",
+    data : e
+  }
+  var json = JSON.stringify(obj);
+  if (obj.partyid){
+    sendMessage(json);
+  }
 
 }
 function setSearch(e){
-    for (i in e.data){
-	var html_out = `<li class='list-group-item' id='${i.uri}'>
-${i.name} - ${i.artists} (${i.album})
-			<button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
-			  Add
-			</button>
-	    </li>`
-	$("#results").append(html_out);
-    }
+  for (i in e.data){
+    var html_out = `<li class='list-group-item' id='${i.uri}'>
+    ${i.name} - ${i.artists} (${i.album})
+    <button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
+    Add
+    </button>
+    </li>`
+    $("#results").append(html_out);
+  }
 }
 function addSong(e){
-        var obj = {
-	    partyid : $("#parties").find(".active").attr("id"),
-	    rtype : "addSong",
-	    data : e
-	}
-	var json = JSON.stringify(obj);
-	if (obj.partyid){
-	    sendMessage(json);
-	}
+  var obj = {
+    partyid : $("#parties").find(".active").attr("id"),
+    rtype : "addSong",
+    data : e
+  }
+  var json = JSON.stringify(obj);
+  if (obj.partyid){
+    sendMessage(json);
+  }
 }
