@@ -30,7 +30,7 @@ socketio = SocketIO(app)
 def handle_message(msg):
     print("message: " + msg)
     reply = parser.parse(msg)
-    print("reply: " + reply)
+    # print("reply: " + reply)
     send(reply)
 
 if __name__ == '__main__':

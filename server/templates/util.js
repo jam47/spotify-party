@@ -11,14 +11,14 @@ socket.on('connect', function() {
 });
 socket.on('message', function(msg) {
   console.log(msg)
-  if (msg.rtype == "searchResults"){
+  if (msg.rtype == "searchResult"){
     setSearch(msg);
   }
   console.log("Received: " + msg);
   var obj = JSON.parse(msg);
   if (obj.rtype == "searchResult"){
-    console.log("Setting songs")
-    setSongs(obj);
+    console.log("Setting search")
+    setSearch(obj);
   } else if (obj.rtype == "auth") {
     window.location = obj.data;
   }
@@ -104,13 +104,30 @@ function start(){
     console.log("Setting ID");
     var decodedCookie = decodeURIComponent(document.cookie);
     console.log(decodedCookie)
-    id = decodedCookie.split("=")[1]
+    id = getCookie("id")
     idGlob = id
     $("#parties").find(".1").addClass("active");
     $("#parties").find(".1").attr("id", id);
   }
   var unimportant = setInterval(() => {getSongs($("#parties").find(".active"))}, 2000);
 }
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 function getSongs(e){
   var obj = {
     partyid : e.attr("id"),
@@ -127,7 +144,7 @@ function setParty(e){
   e.addClass("active");
 }
 function setSongs(e){
-  for (i in e.data){
+  for (i in e.data.tracks){
     var html_out = `<li class='list-group-item' id='${i.uri}'>
     ${i.name} - ${i.artists} (${i.album})
     <i class="material-icons float-right">
@@ -155,11 +172,12 @@ function search(e){
 
 }
 function setSearch(e){
-  for (i in e.data){
-    var html_out = `<li class='list-group-item' id='${i.uri}'>
-    ${i.name} - ${i.artists} (${i.album})
+  for (i = 0; i < e.data.tracks.length; i++) {
+    console.log(e.data.tracks[i].name)
+    var html_out = `<li class='list-group-item' id='+ e.data.tracks[i].uri>'
+    + e.data.tracks[i].name + - ${i.artists} (${i.album})
     <button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
-    Add
+    '+ e.data.tracks[i].name +'
     </button>
     </li>`
     $("#results").append(html_out);
@@ -169,7 +187,7 @@ function addSong(e){
   var obj = {
     partyid : $("#parties").find(".active").attr("id"),
     rtype : "addSong",
-    data : e
+    data : idGlob
   }
   var json = JSON.stringify(obj);
   if (obj.partyid){

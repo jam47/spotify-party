@@ -64,6 +64,7 @@ def getSearchResults(partyid, data):
     sh = SearchHandler()
     result = sh.search_track(data)
     result = sh.trim_result(result)
+    print(result)
     return {"rtype":"searchResult","data":result}
 
 def getCurrentSongsOrdered(partyid,data):
