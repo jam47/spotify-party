@@ -50,7 +50,7 @@ function downvote(e){
     e.prev().css("color", "#000000");
 }
 function start(){
-    var unimportant = setInterval(getSongs($("#parties").find(".active")), 2000);
+    var unimportant = setInterval(() => {getSongs($("#parties").find(".active"))}, 2000);
 }
 function getSongs(e){
     var obj = {
@@ -58,7 +58,9 @@ function getSongs(e){
 	rtype : "getSongs"
     }
     var json = JSON.stringify(obj);
-    sendMessage(json);
+    if (e.attr("id")){
+	sendMessage(json);
+    }
 }
 function setParty(e){
     $(".active").removeClass("active");
