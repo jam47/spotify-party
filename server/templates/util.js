@@ -11,16 +11,18 @@ socket.on('connect', function() {
 });
 socket.on('message', function(msg) {
   console.log(msg)
-  if (msg.rtype == "searchResult"){
-    setSearch(msg);
-  }
-  console.log("Received: " + msg);
-  var obj = JSON.parse(msg);
-  if (obj.rtype == "searchResult"){
-    console.log("Setting search")
-    setSearch(obj);
-  } else if (obj.rtype == "auth") {
-    window.location = obj.data;
+  if (msg !== null && msg !== 'null') {
+    if (msg.rtype == "searchResult"){
+      setSearch(msg);
+    }
+    console.log("Received: " + msg);
+    var obj = JSON.parse(msg);
+    if (obj.rtype == "searchResult"){
+      console.log("Setting search")
+      setSearch(obj);
+    } else if (obj.rtype == "auth") {
+      window.location = obj.data;
+    }
   }
 });
 function upvote(e){
@@ -109,7 +111,7 @@ function start(){
     $("#parties").find(".1").addClass("active");
     $("#parties").find(".1").attr("id", id);
   }
-  var unimportant = setInterval(() => {getSongs($("#parties").find(".active"))}, 2000);
+  var unimportant = setInterval(() => {getSongs(idGlob)}, 2000);
 }
 
 function getCookie(cname) {
@@ -130,7 +132,7 @@ function getCookie(cname) {
 
 function getSongs(e){
   var obj = {
-    partyid : e.attr("id"),
+    partyid : e,
     rtype : "getSongs",
     data : ""
   }
@@ -172,22 +174,29 @@ function search(e){
 
 }
 function setSearch(e){
+  var myNode = $("#results");
+  console.log(myNode)
+  console.log(myNode[0].children[0])
+  while (myNode[0].children[0]) {
+      console.log(myNode)
+      myNode[0].removeChild(myNode[0].children[0]);
+  }
   for (i = 0; i < e.data.tracks.length; i++) {
     console.log(e.data.tracks[i].name)
-    var html_out = `<li class='list-group-item' id='+ e.data.tracks[i].uri>'
-    + e.data.tracks[i].name + - ${i.artists} (${i.album})
-    <button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
-    '+ e.data.tracks[i].name +'
-    </button>
-    </li>`
+    var html_out = "<li class='list-group-item' id="+ e.data.tracks[i].uri + ">"
+    + e.data.tracks[i].name + "- " + e.data.tracks[i].artists + " - " + e.data.tracks[i].album +
+    "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"addSong($(this).parent().attr('id'))\">Add</button>" +
+    "</li>"
     $("#results").append(html_out);
   }
+
 }
 function addSong(e){
+  console.log("Called add song")
   var obj = {
-    partyid : $("#parties").find(".active").attr("id"),
+    partyid : idGlob,
     rtype : "addSong",
-    data : idGlob
+    data : e
   }
   var json = JSON.stringify(obj);
   if (obj.partyid){

@@ -18,9 +18,17 @@ class PartyRoom:
         }
 
         i = 0
-        while self.songList[i]["votes"] > 0:
+        while len(self.songList) > i and self.songList[i]["votes"] > 0:
             i += 1
-        self.songList.insert(i + 1, votedSong)
+
+        if i == len(self.songList):
+            self.songList.append(votedSong)
+            print(self.songList)
+        else:
+            self.songList.insert(i + 1, votedSong)
+            print(self.songList)
+
+
 
     def modifySongVotes(self, uri, voteModification):
         toModify = None

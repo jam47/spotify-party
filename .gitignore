@@ -62,3 +62,5 @@ src/credentials\.json
 server/env/
 
 server/__pycache__/
+
+env/

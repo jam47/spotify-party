@@ -9,7 +9,7 @@ partyids = {}
 
 def parse(strMsg):
     msg = json.loads(strMsg)
-    print(partyids)
+    print(msg)
     if msg["partyid"] in partyids:
         switcher = {
             "addSong":addSong,
@@ -68,7 +68,10 @@ def getSearchResults(partyid, data):
     return {"rtype":"searchResult","data":result}
 
 def getCurrentSongsOrdered(partyid,data):
-    result = sh.search_track(data["searchTerm"])
+    print("GETTING CURRENT ORDERED SONGS")
+    print(partyid)
+    print(partyids[partyid])
+    print(partyids[partyid].getCurrentUnplayedSongsInDescVotes())
     return {
         "rtype":"songList",
         "data":partyids[partyid].getCurrentUnplayedSongsInDescVotes()
