@@ -28,6 +28,8 @@ def parse(strMsg):
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
 
+
+
 def createRoom(username):
     while True:
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
@@ -51,9 +53,13 @@ def proccessAuthenicationURL(partyid, data):
 def startPlayback(partyid, data):
     room = partyids[partyid]
     firstSongToPlay = room.getMostUpvotedNotPlayedToPlay()
-    room.playbackHandler.addSong()
-    room.playbackHandler.addSong(room.getMostUpvotedNotPlayedToPlay())
+    print("\n\STARTED AUTHENTICATION\n\n")
+    
+    room.playbackHandler.add_song(firstSongToPlay)
+    room.playbackHandler.add_song(room.getMostUpvotedNotPlayedToPlay())
     room.setCurrentlyPlayingSong(firstSongToPlay)
+    partyids[partyId].started = True
+
 
 #Negative number of votes for downvotes
 def addVotes(partyid, data):
@@ -61,6 +67,7 @@ def addVotes(partyid, data):
 
 
 def getSearchResults(partyid, data):
+    print("Searching for results")
     sh = SearchHandler()
     result = sh.search_track(data)
     result = sh.trim_result(result)
@@ -98,10 +105,13 @@ def getRedirectUrl(partyid, data):
 def updateAllPlaylists():
     for partyId in partyids:
         if (partyids[partyId].isActive()):
-            if partyids[partyId].currentlyPlayingSong["uri"] != partyids[partyId].playbackHandler.currently_playing_uri():
-                previousSongUri = partyids[partyId].currentlyPlayingSong["uri"]
-                partyids[partyId].playbackHandler.add_song(partyids[partyId].getMostUpvotedNotPlayed())
-                partyids[partyId].playbackHandler.remove_song(previousSongUri)
+            print(partyids[partyId].playbackHandler.sp)
+            if partyids[partyId].started and partyids[partyId].currentlyPlayingSong != None:
+                if partyids[partyId].currentlyPlayingSong != partyids[partyId].playbackHandler.currently_playing_uri():
+                    print("NOT SAME SONG")
+                    previousSongUri = partyids[partyId].currentlyPlayingSong["uri"]
+                    partyids[partyId].playbackHandler.add_song(partyids[partyId].getMostUpvotedNotPlayed())
+                    partyids[partyId].playbackHandler.remove_song(previousSongUri)
         else:
             partyids[partyId].playbackHandler.delete_playlist()
             partyids.pop(partyId)

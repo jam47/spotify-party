@@ -25,6 +25,7 @@ class PlaybackHandler:
         self.sp.user_playlist_add_tracks(self.username, self.playlist_id, uris)
 
     def add_song(self, uri):
+        print("adding song")
         self.add_songs([uri])
 
     def remove_song(self, uri):
@@ -54,10 +55,12 @@ class PlaybackHandler:
         return False
 
     def authenticate_user(self):
-        token = util.prompt_for_user_token(self.username, self.scope, self.credentials["client_id"],
-                                           self.credentials["client_secret"],
-                                           self.credentials["redirect_url"])
+        print(self.credentials["redirect_url"])
+        token = util.prompt_for_user_token(self.username, self.scope, client_id=self.credentials["client_id"],
+                                           client_secret=self.credentials["client_secret"],
+                                           redirect_uri=self.credentials["redirect_url"])
         sp = spotipy.Spotify(auth=token)
+        print("\n\nFINISHED AUTHENTICATION\n\n")
         return sp
 
     def get_cached_token(self):
@@ -76,5 +79,3 @@ class PlaybackHandler:
 
     def authenticate(self, token):
         self.sp = spotipy.Spotify(auth=token)
-
-

@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit
 import parser
+import threading
 
 app = Flask(__name__)
 
@@ -34,5 +35,6 @@ def handle_message(msg):
     send(reply)
 
 if __name__ == '__main__':
+    mainLoopThread = threading.Thread(target = parser.mainLoop)
+    mainLoopThread.start()
     socketio.run(app)
-    parser.mainLoop()

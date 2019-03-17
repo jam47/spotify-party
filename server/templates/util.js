@@ -25,6 +25,17 @@ socket.on('message', function(msg) {
     }
   }
 });
+function startPlayback(e) {
+  var obj = {
+    partyid : idGlob,
+    rtype : "startPlayback",
+    data : ""
+  }
+  var json = JSON.stringify(obj);
+  if (obj.partyid){
+    sendMessage(json);
+  }
+}
 function upvote(e){
   if (e.css("color") == "rgb(0, 255, 0)"){
     e.css("color","#000000");
