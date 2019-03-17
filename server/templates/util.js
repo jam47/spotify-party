@@ -21,6 +21,7 @@ socket.on('message', function(msg) {
       console.log("Setting search")
       setSearch(obj);
     } else if (obj.rtype == "auth") {
+      console.log("REDIRECTING TO AUTH URL")
       window.location = obj.data;
     }
   }
@@ -121,6 +122,15 @@ function start(){
     idGlob = id
     $("#parties").find(".1").addClass("active");
     $("#parties").find(".1").attr("id", id);
+
+    var authCode = url.searchParams.get("code");
+    authTokenData = {
+      "partyid":id,
+      "rtype":"setAuthToken",
+      "data": authCode
+    }
+    strAuthTokenData = JSON.stringify(authTokenData);
+    sendMessage(strAuthTokenData);
   }
   var unimportant = setInterval(() => {getSongs(idGlob)}, 2000);
 }

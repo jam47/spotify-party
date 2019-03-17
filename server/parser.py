@@ -18,7 +18,8 @@ def parse(strMsg):
             "getSearchResults":getSearchResults,
             "addVotes":addVotes,
             "auth":getRedirectUrl,
-            "getSongs":getCurrentSongsOrdered
+            "getSongs":getCurrentSongsOrdered,
+            "setAuthToken":proccessAuthenicationURL
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
         return json.dumps(function(msg["partyid"], msg["data"]))
@@ -45,7 +46,8 @@ def closeRoom(partyid, data):
     partyids[data["partyid"]].setInactive()
 
 def proccessAuthenicationURL(partyid, data):
-    token = partyids[partyid].playbackHandler.get_auth_token(data["authURL"])
+    print(data)
+    token = partyids[partyid].playbackHandler.get_auth_token(data)
     if token:
         partyids[partyid].playbackHandler.authenticate(token)
 
@@ -53,12 +55,12 @@ def proccessAuthenicationURL(partyid, data):
 def startPlayback(partyid, data):
     room = partyids[partyid]
     firstSongToPlay = room.getMostUpvotedNotPlayedToPlay()
-    print("\n\STARTED AUTHENTICATION\n\n")
-    
+    print(room.playbackHandler.sp)
     room.playbackHandler.add_song(firstSongToPlay)
     room.playbackHandler.add_song(room.getMostUpvotedNotPlayedToPlay())
     room.setCurrentlyPlayingSong(firstSongToPlay)
-    partyids[partyId].started = True
+    room.playbackHandler.start_playback()
+    partyids[partyid].started = True
 
 
 #Negative number of votes for downvotes
@@ -101,16 +103,18 @@ def getRedirectUrl(partyid, data):
         print("No Token!")
         return None
 
+# def setAuthToken(partyid, data):
+#     partyids[partyid].playbackHandler.authenticate(data)
+#     print("FINISHED AUTHENTICATION with code", data)
 
 def updateAllPlaylists():
     for partyId in partyids:
         if (partyids[partyId].isActive()):
-            print(partyids[partyId].playbackHandler.sp)
             if partyids[partyId].started and partyids[partyId].currentlyPlayingSong != None:
                 if partyids[partyId].currentlyPlayingSong != partyids[partyId].playbackHandler.currently_playing_uri():
                     print("NOT SAME SONG")
-                    previousSongUri = partyids[partyId].currentlyPlayingSong["uri"]
-                    partyids[partyId].playbackHandler.add_song(partyids[partyId].getMostUpvotedNotPlayed())
+                    previousSongUri = partyids[partyId].currentlyPlayingSong
+                    partyids[partyId].playbackHandler.add_song(partyids[partyId].getMostUpvotedNotPlayedToPlay())
                     partyids[partyId].playbackHandler.remove_song(previousSongUri)
         else:
             partyids[partyId].playbackHandler.delete_playlist()
