@@ -18,15 +18,17 @@ class PlaybackHandler:
         self.sp_oauth = oauth2.SpotifyOAuth(self.credentials["client_id"], self.credentials["client_secret"],
                                             self.credentials["redirect_url"],
                                             scope=self.scope, cache_path=".cache" + username)
-
-    def add_songs(self, uris):
+    def playlist_length(self):
+        result = self.sp.user_playlist(self.username, self.playlist_id, fields="tracks")
+        return result["tracks"]["total"]
+    def add_songs_end(self, uris):
         if not self.check_playlist_exists():
             self.create_playlist()
-        self.sp.user_playlist_add_tracks(self.username, self.playlist_id, uris)
+        self.sp.user_playlist_add_tracks(self.username, self.playlist_id, uris, position = self.playlist_length())
 
-    def add_song(self, uri):
+    def add_song_end(self, uri):
         print("adding song")
-        self.add_songs([uri])
+        self.add_songs_end([uri])
 
     def remove_song(self, uri):
         assert self.check_playlist_exists(), "Playlist must exist before song can be removed"

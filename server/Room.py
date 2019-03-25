@@ -1,4 +1,5 @@
 from API_Handler_Playback import PlaybackHandler
+from API_Handler_Search import SearchHandler
 
 class PartyRoom:
 
@@ -12,10 +13,15 @@ class PartyRoom:
         self.username = username
 
     def addSong(self, jsonSong):
+        sh = SearchHandler()
+        result = sh.get_track_by_uri(jsonSong)
         votedSong = {
             "uri": jsonSong,
             "votes": 0,
-            "played": False
+            "played": False,
+            "name": result.get("name"),
+            "artists": [artist.get("name") for artist in result.get("artists")],
+            "album": result.get("album").get("name"),
         }
 
         i = 0
@@ -49,7 +55,6 @@ class PartyRoom:
         for song in self.songList:
             if (not song["played"]):
                 song["played"] = True
-                self.currentlyPlayingSong = song["uri"]
                 return song["uri"]
 
     def isActive(self):

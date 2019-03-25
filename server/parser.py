@@ -55,10 +55,9 @@ def proccessAuthenicationURL(partyid, data):
 def startPlayback(partyid, data):
     room = partyids[partyid]
     firstSongToPlay = room.getMostUpvotedNotPlayedToPlay()
-    print(room.playbackHandler.sp)
-    room.playbackHandler.add_song(firstSongToPlay)
-    room.playbackHandler.add_song(room.getMostUpvotedNotPlayedToPlay())
     room.setCurrentlyPlayingSong(firstSongToPlay)
+    room.playbackHandler.add_song_end(firstSongToPlay)
+    room.playbackHandler.add_song_end(room.getMostUpvotedNotPlayedToPlay())
     room.playbackHandler.start_playback()
     partyids[partyid].started = True
 
@@ -114,7 +113,8 @@ def updateAllPlaylists():
                 if partyids[partyId].currentlyPlayingSong != partyids[partyId].playbackHandler.currently_playing_uri():
                     print("NOT SAME SONG")
                     previousSongUri = partyids[partyId].currentlyPlayingSong
-                    partyids[partyId].playbackHandler.add_song(partyids[partyId].getMostUpvotedNotPlayedToPlay())
+                    partyids[partyId].currentlyPlayingSong = partyids[partyId].playbackHandler.currently_playing_uri()
+                    partyids[partyId].playbackHandler.add_song_end(partyids[partyId].getMostUpvotedNotPlayedToPlay())
                     partyids[partyId].playbackHandler.remove_song(previousSongUri)
         else:
             partyids[partyId].playbackHandler.delete_playlist()

@@ -21,4 +21,4 @@ def create_playlist():
 
 def add_song():
     song_uri = input("Enter a uri:")
-    playlist_handler.add_song(song_uri)
+    playlist_handler.add_song_end(song_uri)

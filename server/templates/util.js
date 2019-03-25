@@ -23,6 +23,9 @@ socket.on('message', function(msg) {
     } else if (obj.rtype == "auth") {
       console.log("REDIRECTING TO AUTH URL")
       window.location = obj.data;
+    } else if (obj.rtype == "songList") {
+      console.log("SETTING SONGS")
+      setSongs(obj)
     }
   }
 });
@@ -158,27 +161,33 @@ function getSongs(e){
     data : ""
   }
   var json = JSON.stringify(obj);
-  if (obj.getSongs){
-    sendMessage(json);
-  }
+  console.log("GETTING SONGS STILL TO PLAY")
+
+  sendMessage(json);
+
 }
 function setParty(e){
   $(".active").removeClass("active");
   e.addClass("active");
 }
 function setSongs(e){
-  for (i in e.data.tracks){
-    var html_out = `<li class='list-group-item' id='${i.uri}'>
-    ${i.name} - ${i.artists} (${i.album})
-    <i class="material-icons float-right">
-    <span class="thup" onclick="upvote($(this))">
-    thumb_up
-    </span>
-    <span class="thdn" onclick="downvote($(this))">
-    thumb_down
-    </span>
-    </i>
-    </li>`
+  var myNode = $("#tracks");
+  while (myNode[0].children[0]) {
+      console.log(myNode)
+      myNode[0].removeChild(myNode[0].children[0]);
+  }
+  for (i in e.data){
+    var html_out = "<li class='list-group-item' id=" + e.data[i].uri + ">" +
+    e.data[i].name + " - " +  e.data[i].artists + " (" + e.data[i].album + ")" +
+    "<i class=\"material-icons float-right\">" +
+    "<span class=\"thup\" onclick=\"upvote($(this))\">" +
+    " thumb_up" +
+    "</span>" +
+    "<span class=\"thdn\" onclick=\"downvote($(this))\">" +
+    " thumb_down" +
+    "</span>" +
+    "</i>" +
+    "</li>"
     $("#tracks").append(html_out);
   }
 }
