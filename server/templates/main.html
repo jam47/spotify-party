@@ -33,16 +33,16 @@
 		</li>
 		<li class="nav-item" id="3" onclick="setParty($(this))">
 		  <a class="nav-link" href="#">Party 3</a>
-		</li> 
+		</li>
 	      </ul>
-	    </div> 
+	    </div>
 	  </nav>
 	</div>
-	
+
 	<div class="p-0 col-12 col-md-8">
 	  <div style="height:56px; color:#1db954; background:#191414;">
 	    <div class="float-right" style="height:56px;">
-	      <i class="material-icons" style="font-size:48px;padding-top:4px;">play_circle_filled</i>
+	      <i class="material-icons" style="font-size:48px;padding-top:4px;" onclick="startPlayback()">play_circle_filled</i>
 	      <button type="button" class="btn btn-primary" style="margin:9px;vertical-align:top" data-toggle="modal" data-target="#myModal">
 		Add song
 	      </button>
@@ -55,18 +55,18 @@
 
 		  <div class="modal-header">
 		    <h4 class="modal-title">Add Song</h4>
-		    <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>	    
+		    <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>
 		  </div>
 
 		  <div class="modal-body" style="background:#1db954; color:#191414">
-		    
+
 		    <div class="input-group mb-3">
 		      <input type="text" class="form-control" placeholder="Search">
 		      <div class="input-group-append" onclick="search($(this).prev().val())">
 			<button class="input-group-text material-icons btn-primary">search</button>
 		      </div>
 		    </div>
-		    
+
 		    <ul class="list-group" id="results">
 		      <li class="list-group-item" id="123">Song
 			<button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
@@ -84,7 +84,7 @@
 	      </div>
 	    </div>
 	  </div>
-	  
+
 	  <ul class="list-group" id="tracks">
 	    <li class="list-group-item" id="41242421">First item
 	      <i class="material-icons float-right">
@@ -118,7 +118,7 @@
 		</span>
 	      </i>
 	    </li>
-	  </ul> 
+	  </ul>
 	</div>
       </div>
     </div>

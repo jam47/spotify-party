@@ -52,3 +52,9 @@
 .input-group-append.active{
     background:#1db954;
 }
+a{
+    color:#1db954;
+}
+a:hover{
+    color:#ffffff;
+}

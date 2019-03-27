@@ -17,11 +17,6 @@ class SearchHandler:
         result = self.sp.search(q='track:' + track_name, limit=10, type='track')
         return result
 
-    def get_track_by_uri(self, track_uri):
-        assert type(track_uri) is str, "track_uri is not a string"
-        result = self.sp.track(track_uri)
-        return result
-
     def trim_result(self, result):
         assert type(result) is dict, "result must be a dictionary"
         trimmed_results = {'tracks': []}

@@ -1,30 +1,46 @@
 from API_Handler_Playback import PlaybackHandler
+from API_Handler_Search import SearchHandler
 
 class PartyRoom:
 
     DEFAULT_VOTES = 0
     def __init__(self, username):
         self.songList = []
+        self.started = False
         self.currentlyPlayingSong = None
-        self.isActive = True
+        self.isActiveVal = True
         self.playbackHandler = PlaybackHandler(username, "Spotify Party")
+        self.username = username
 
     def addSong(self, jsonSong):
+        sh = SearchHandler()
+        result = sh.get_track_by_uri(jsonSong)
         votedSong = {
-            "song": jsonSong,
+            "uri": jsonSong,
             "votes": 0,
-            "played": False
+            "played": False,
+            "name": result.get("name"),
+            "artists": [artist.get("name") for artist in result.get("artists")],
+            "album": result.get("album").get("name"),
         }
 
         i = 0
-        while self.songList[i]["votes"] > 0:
+        while len(self.songList) > i and self.songList[i]["votes"] > 0:
             i += 1
-        self.songList.insert(i + 1, votedSong)
+
+        if i == len(self.songList):
+            self.songList.append(votedSong)
+            print(self.songList)
+        else:
+            self.songList.insert(i + 1, votedSong)
+            print(self.songList)
+
+
 
     def modifySongVotes(self, uri, voteModification):
         toModify = None
         for song in self.songList:
-            if song["song"]["uri"] == uri:
+            if song["uri"] == uri:
                 toModify = song
         if (toModify != None):
             self.songList.remove(toModify)
@@ -38,15 +54,14 @@ class PartyRoom:
     def getMostUpvotedNotPlayedToPlay(self):
         for song in self.songList:
             if (not song["played"]):
-                song["Played"] = True
-                self.currentlyPlayingSong = song["song"]
-                return song["song"]
+                song["played"] = True
+                return song["uri"]
 
     def isActive(self):
-        return self.isActive
+        return self.isActiveVal
 
     def setInactive(self):
-        self.isActive = False
+        self.isActiveVal = False
 
     def getCurrentUnplayedSongsInDescVotes(self):
         currentUnplayedSongs = []
