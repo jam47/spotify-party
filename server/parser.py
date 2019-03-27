@@ -9,7 +9,7 @@ partyids = {}
 
 def parse(strMsg):
     msg = json.loads(strMsg)
-    print(partyids)
+    print(msg)
     if msg["partyid"] in partyids:
         switcher = {
             "addSong":addSong,
@@ -18,7 +18,8 @@ def parse(strMsg):
             "getSearchResults":getSearchResults,
             "addVotes":addVotes,
             "auth":getRedirectUrl,
-            "getSongs":getCurrentSongsOrdered
+            "getSongs":getCurrentSongsOrdered,
+            "setAuthToken":proccessAuthenicationURL
         }
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
         return json.dumps(function(msg["partyid"], msg["data"]))
@@ -27,6 +28,8 @@ def parse(strMsg):
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
+
+
 
 def createRoom(username):
     while True:
@@ -43,7 +46,8 @@ def closeRoom(partyid, data):
     partyids[data["partyid"]].setInactive()
 
 def proccessAuthenicationURL(partyid, data):
-    token = partyids[partyid].playbackHandler.get_auth_token(data["authURL"])
+    print(data)
+    token = partyids[partyid].playbackHandler.get_auth_token(data)
     if token:
         partyids[partyid].playbackHandler.authenticate(token)
 
@@ -51,9 +55,12 @@ def proccessAuthenicationURL(partyid, data):
 def startPlayback(partyid, data):
     room = partyids[partyid]
     firstSongToPlay = room.getMostUpvotedNotPlayedToPlay()
-    room.playbackHandler.addSong()
-    room.playbackHandler.addSong(room.getMostUpvotedNotPlayedToPlay())
     room.setCurrentlyPlayingSong(firstSongToPlay)
+    room.playbackHandler.add_song_end(firstSongToPlay)
+    room.playbackHandler.add_song_end(room.getMostUpvotedNotPlayedToPlay())
+    room.playbackHandler.start_playback()
+    partyids[partyid].started = True
+
 
 #Negative number of votes for downvotes
 def addVotes(partyid, data):
@@ -61,6 +68,7 @@ def addVotes(partyid, data):
 
 
 def getSearchResults(partyid, data):
+    print("Searching for results")
     sh = SearchHandler()
     result = sh.search_track(data)
     result = sh.trim_result(result)
@@ -68,7 +76,10 @@ def getSearchResults(partyid, data):
     return {"rtype":"searchResult","data":result}
 
 def getCurrentSongsOrdered(partyid,data):
-    result = sh.search_track(data["searchTerm"])
+    print("GETTING CURRENT ORDERED SONGS")
+    print(partyid)
+    print(partyids[partyid])
+    print(partyids[partyid].getCurrentUnplayedSongsInDescVotes())
     return {
         "rtype":"songList",
         "data":partyids[partyid].getCurrentUnplayedSongsInDescVotes()
@@ -91,14 +102,20 @@ def getRedirectUrl(partyid, data):
         print("No Token!")
         return None
 
+# def setAuthToken(partyid, data):
+#     partyids[partyid].playbackHandler.authenticate(data)
+#     print("FINISHED AUTHENTICATION with code", data)
 
 def updateAllPlaylists():
     for partyId in partyids:
         if (partyids[partyId].isActive()):
-            if partyids[partyId].currentlyPlayingSong["uri"] != partyids[partyId].playbackHandler.currently_playing_uri():
-                previousSongUri = partyids[partyId].currentlyPlayingSong["uri"]
-                partyids[partyId].playbackHandler.add_song(partyids[partyId].getMostUpvotedNotPlayed())
-                partyids[partyId].playbackHandler.remove_song(previousSongUri)
+            if partyids[partyId].started and partyids[partyId].currentlyPlayingSong != None:
+                if partyids[partyId].currentlyPlayingSong != partyids[partyId].playbackHandler.currently_playing_uri():
+                    print("NOT SAME SONG")
+                    previousSongUri = partyids[partyId].currentlyPlayingSong
+                    partyids[partyId].currentlyPlayingSong = partyids[partyId].playbackHandler.currently_playing_uri()
+                    partyids[partyId].playbackHandler.add_song_end(partyids[partyId].getMostUpvotedNotPlayedToPlay())
+                    partyids[partyId].playbackHandler.remove_song(previousSongUri)
         else:
             partyids[partyId].playbackHandler.delete_playlist()
             partyids.pop(partyId)

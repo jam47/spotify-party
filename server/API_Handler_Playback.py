@@ -10,22 +10,25 @@ class PlaybackHandler:
         credentials = json.load(credentials_file)
 
     def __init__(self, username, playlist_name):
-        self.scope = 'playlist-modify-private playlist-read-private user-read-playback-state'
+        self.scope = 'playlist-modify-private playlist-read-private user-read-playback-state user-modify-playback-state'
         self.username = username
         self.playlist_id = None
         self.playlist_name = playlist_name
         self.sp = None
-        self.sp_oauth = oauth2.SpotifyOAuth(self.credentials["client_id"], self.credentials["client_id"],
+        self.sp_oauth = oauth2.SpotifyOAuth(self.credentials["client_id"], self.credentials["client_secret"],
                                             self.credentials["redirect_url"],
                                             scope=self.scope, cache_path=".cache" + username)
-
-    def add_songs(self, uris):
+    def playlist_length(self):
+        result = self.sp.user_playlist(self.username, self.playlist_id, fields="tracks")
+        return result["tracks"]["total"]
+    def add_songs_end(self, uris):
         if not self.check_playlist_exists():
             self.create_playlist()
-        self.sp.user_playlist_add_tracks(self.username, self.playlist_id, uris)
+        self.sp.user_playlist_add_tracks(self.username, self.playlist_id, uris, position = self.playlist_length())
 
-    def add_song(self, uri):
-        self.add_songs([uri])
+    def add_song_end(self, uri):
+        print("adding song")
+        self.add_songs_end([uri])
 
     def remove_song(self, uri):
         assert self.check_playlist_exists(), "Playlist must exist before song can be removed"
@@ -34,7 +37,7 @@ class PlaybackHandler:
     def create_playlist(self):
         if not self.check_playlist_exists():
             playlist = self.sp.user_playlist_create(self.username, self.playlist_name, False)
-            self.playlist_id = playlist.get("id")
+            self.playlist_id = "spotify:user:" + self.username + ":playlist:" + playlist.get("id")
 
     def delete_playlist(self):
         assert self.check_playlist_exists(), "Playlist must exist before deletion"
@@ -52,12 +55,17 @@ class PlaybackHandler:
                 self.playlist_id = playlist.get("id")
                 return True
         return False
+    def start_playback(self):
+        playlist_uri = self.playlist_id
+        self.sp.start_playback(context_uri = playlist_uri)
 
     def authenticate_user(self):
-        token = util.prompt_for_user_token(self.username, self.scope, self.credentials["client_id"],
-                                           self.credentials["client_secret"],
-                                           self.credentials["redirect_url"])
+        print(self.credentials["redirect_url"])
+        token = util.prompt_for_user_token(self.username, self.scope, client_id=self.credentials["client_id"],
+                                           client_secret=self.credentials["client_secret"],
+                                           redirect_uri=self.credentials["redirect_url"])
         sp = spotipy.Spotify(auth=token)
+        print("\n\nFINISHED AUTHENTICATION\n\n")
         return sp
 
     def get_cached_token(self):
@@ -67,7 +75,7 @@ class PlaybackHandler:
         return self.sp_oauth.get_authorize_url()
 
     def get_auth_token(self, response):
-        code = self.sp_oauth.parse_response_code(response)
+        code = response
         token_info = self.sp_oauth.get_access_token(code)
         if token_info:
             return token_info["access_token"]
@@ -76,5 +84,3 @@ class PlaybackHandler:
 
     def authenticate(self, token):
         self.sp = spotipy.Spotify(auth=token)
-
-
