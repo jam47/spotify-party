@@ -1,8 +1,8 @@
-from API_Handler_Playback import PlaybackHandler
-from API_Handler_Search import SearchHandler
+from server.API_Handler_Playback import PlaybackHandler
+from server.API_Handler_Search import SearchHandler
+
 
 class PartyRoom:
-
     DEFAULT_VOTES = 0
     def __init__(self, username):
         self.songList = []
@@ -42,14 +42,14 @@ class PartyRoom:
         for song in self.songList:
             if song["uri"] == uri:
                 toModify = song
-        if (toModify != None):
+        if toModify != None and self.songList.__len__() > 1:
             self.songList.remove(toModify)
             toModify["votes"] += voteModification
             newVotes = toModify["votes"]
             i = 0
-            while self.songList[i]["votes"] > newVotes:
+            while i < self.songList.__len__() and self.songList[i]["votes"] > newVotes:
                 i += 1
-            self.songList.insert(i + 1, toModify)
+            self.songList.insert(i, toModify)
 
     def getMostUpvotedNotPlayedToPlay(self):
         for song in self.songList:
