@@ -1,9 +1,11 @@
 import string
 import random
 import time
-from Room import PartyRoom
+
 import json
-from API_Handler_Search import SearchHandler
+
+from server.Room import PartyRoom
+from server.API_Handler_Search import SearchHandler
 
 partyids = {}
 
@@ -16,7 +18,7 @@ def parse(strMsg):
             "closeRoom":closeRoom,
             "startPlayback":startPlayback,
             "getSearchResults":getSearchResults,
-            "addVotes":addVotes,
+            "sendVote":addVotes,
             "auth":getRedirectUrl,
             "getSongs":getCurrentSongsOrdered,
             "setAuthToken":proccessAuthenicationURL
@@ -64,7 +66,7 @@ def startPlayback(partyid, data):
 
 #Negative number of votes for downvotes
 def addVotes(partyid, data):
-    partyids[partyid].modifySongVotes(data["uri"], data["numberOfVotes"])
+    partyids[partyid].modifySongVotes(data["uri"], data["voteMod"])
 
 
 def getSearchResults(partyid, data):
