@@ -3,6 +3,7 @@ from server.API_Handler_Search import SearchHandler
 
 
 class PartyRoom:
+
     DEFAULT_VOTES = 0
     def __init__(self, username):
         self.songList = []
@@ -34,8 +35,6 @@ class PartyRoom:
         else:
             self.songList.insert(i + 1, votedSong)
             print(self.songList)
-
-
 
     def modifySongVotes(self, uri, voteModification):
         toModify = None

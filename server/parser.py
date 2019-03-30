@@ -7,6 +7,7 @@ import json
 from server.Room import PartyRoom
 from server.API_Handler_Search import SearchHandler
 
+SILENT_TRACK_URI = "spotify:track:7cctPQS83y620UQtMd1ilL"
 partyids = {}
 
 def parse(strMsg):
@@ -60,6 +61,7 @@ def startPlayback(partyid, data):
     room.setCurrentlyPlayingSong(firstSongToPlay)
     room.playbackHandler.add_song_end(firstSongToPlay)
     room.playbackHandler.add_song_end(room.getMostUpvotedNotPlayedToPlay())
+    room.playbackHandler.add_song_end(SILENT_TRACK_URI)
     room.playbackHandler.start_playback()
     partyids[partyid].started = True
 
@@ -112,12 +114,18 @@ def updateAllPlaylists():
     for partyId in partyids:
         if (partyids[partyId].isActive()):
             if partyids[partyId].started and partyids[partyId].currentlyPlayingSong != None:
+                partyids[partyId].playbackHandler.refreshPlaylist()
                 if partyids[partyId].currentlyPlayingSong != partyids[partyId].playbackHandler.currently_playing_uri():
                     print("NOT SAME SONG")
                     previousSongUri = partyids[partyId].currentlyPlayingSong
                     partyids[partyId].currentlyPlayingSong = partyids[partyId].playbackHandler.currently_playing_uri()
                     partyids[partyId].playbackHandler.add_song_end(partyids[partyId].getMostUpvotedNotPlayedToPlay())
                     partyids[partyId].playbackHandler.remove_song(previousSongUri)
+                    if partyids[partyId].currentlyPlayingSong == SILENT_TRACK_URI:
+                        partyids[partyId].playbackHandler.remove_song(SILENT_TRACK_URI)
+                        partyids[partyId].playbackHandler.add_song_offset(SILENT_TRACK_URI, 1)
+                        partyids[partyId].currentlyPlayingSong = partyids[partyId].playbackHandler.get_uri_playlist_offset(0)
+                        partyids[partyId].playbackHandler.start_playback()
         else:
             partyids[partyId].playbackHandler.delete_playlist()
             partyids.pop(partyId)
