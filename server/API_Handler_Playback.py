@@ -4,6 +4,8 @@ import spotipy.util as util
 from spotipy import oauth2
 
 
+
+
 class PlaybackHandler:
 
     with open("credentials.json") as credentials_file:
@@ -30,6 +32,10 @@ class PlaybackHandler:
         print("adding song")
         self.add_songs_end([uri])
 
+    def add_song_offset(self, uri, offset):
+        self.sp.user_playlist_add_tracks(self.username, self.playlist_id, [uri], position=offset)
+
+
     def remove_song(self, uri):
         assert self.check_playlist_exists(), "Playlist must exist before song can be removed"
         self.sp.user_playlist_remove_all_occurrences_of_tracks(self.username, self.playlist_id, [uri])
@@ -46,6 +52,13 @@ class PlaybackHandler:
     def currently_playing_uri(self):
         return self.sp.currently_playing().get("item").get("uri")
 
+    def get_uri_playlist_offset(self, offset):
+        result = self.sp.user_playlist(self.username, self.playlist_id, fields="tracks")
+        return result["tracks"]["items"][offset]["track"]["uri"]
+
+    def refreshPlaylist(self):
+        self.sp.current_user_playlists()
+
     def check_playlist_exists(self):
         if self.playlist_id:
             return True
@@ -55,9 +68,13 @@ class PlaybackHandler:
                 self.playlist_id = playlist.get("id")
                 return True
         return False
-    def start_playback(self):
+
+    def start_playback(self, offset = None):
         playlist_uri = self.playlist_id
-        self.sp.start_playback(context_uri = playlist_uri)
+        if offset:
+            self.sp.start_playback(context_uri = playlist_uri)
+        else:
+            self.sp.start_playback(context_uri=playlist_uri, offset=offset)
 
     def authenticate_user(self):
         print(self.credentials["redirect_url"])
