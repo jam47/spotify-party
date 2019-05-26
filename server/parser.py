@@ -27,19 +27,19 @@ def parse(strMsg):
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
         return json.dumps(function(msg["partyid"], msg["data"]))
     if msg["rtype"] == "createRoom":
-        return json.dumps(createRoom(msg["data"]))
+        return json.dumps(createRoom())
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
 
 
 
-def createRoom(username):
+def createRoom():
     while True:
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         if code not in partyids:
             break
-    partyids[code] = PartyRoom(username)
+    partyids[code] = PartyRoom()
     return {
         "rtype":"roomCode",
         "data":code
@@ -52,7 +52,7 @@ def proccessAuthenicationURL(partyid, data):
     print(data)
     token = partyids[partyid].playbackHandler.get_auth_token(data)
     if token:
-        partyids[partyid].playbackHandler.authenticate(token)
+        partyids[partyid].authenticate(token)
 
 
 def startPlayback(partyid, data):
@@ -85,8 +85,8 @@ def getCurrentSongsOrdered(partyid,data):
     print(partyids[partyid])
     print(partyids[partyid].getCurrentUnplayedSongsInDescVotes())
     return {
-        "rtype":"songList",
-        "data":partyids[partyid].getCurrentUnplayedSongsInDescVotes()
+        "rtype" : "songList",
+        "data": partyids[partyid].getCurrentUnplayedSongsInDescVotes()
     }
 
 def mainLoop():
@@ -103,8 +103,13 @@ def getRedirectUrl(partyid, data):
                 "data":url
             }
     else:
-        print("No Token!")
-        return None
+        print("Don't need to redirect!")
+        partyids[partyid].authenticate(partyids[partyid].playbackHandler.get_refreshed_cached_token()["access_token"])
+
+        return {
+            "rtype": "auth",
+            "data": "None"
+        }
 
 # def setAuthToken(partyid, data):
 #     partyids[partyid].playbackHandler.authenticate(data)

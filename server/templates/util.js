@@ -23,7 +23,18 @@ socket.on('message', function(msg) {
       setSearch(obj);
     } else if (obj.rtype == "auth") {
       console.log("REDIRECTING TO AUTH URL")
-      window.location = obj.data;
+      if (obj.data != "None") {
+        //need to redirect to obtain authentication
+        window.location = obj.data;
+      } else {
+        //user authentication already cached
+        var url_string = window.location.href
+        var url = new URL(url_string);
+        var id = url.searchParams.get("id");
+        idGlob = id;
+        $("#parties").find(".1").addClass("active");
+        $("#parties").find(".1").attr("id", id);
+      }
     } else if (obj.rtype == "songList") {
       console.log("SETTING SONGS")
       setSongs(obj)
