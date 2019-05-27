@@ -27,19 +27,19 @@ def parse(strMsg):
         function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
         return json.dumps(function(msg["partyid"], msg["data"]))
     if msg["rtype"] == "createRoom":
-        return json.dumps(createRoom())
+        return json.dumps(createRoom(msg["data"]))
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
 
 
 
-def createRoom():
+def createRoom(room_name):
     while True:
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         if code not in partyids:
             break
-    partyids[code] = PartyRoom()
+    partyids[code] = PartyRoom(room_name)
     return {
         "rtype":"roomCode",
         "data":code

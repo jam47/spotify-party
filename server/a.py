@@ -21,11 +21,16 @@ def return_util():
     return render_template('util.js')
 
 
+@app.route('/index.js')
+def return_index_js():
+    return render_template('index.js')
+
+
 @app.route('/main.css')
 def return_main_css():
     return render_template('main.css')
 
-#TODO:figure out why css isn't rendering
+
 @app.route('/index.css')
 def return_index_css():
     return render_template('index.css')

@@ -1,0 +1,180 @@
+body {
+  background-color: #191414;
+}
+
+.slam
+{
+  animation: slam 1s;
+  animation-timing-function: ease-in;
+  color: #1DB954;
+  display: block;
+  font-family: "Gotham", sans-serif;
+  font-size: 13em;
+  font-weight: 900;
+  position: relative;
+  text-align: center;
+}
+
+.slam_delayed
+{
+  animation-delay: 1s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  color: white;
+}
+
+.button_div{
+  animation: button_down 1s;
+  animation-play-state: paused;
+  animation-fill-mode: forwards;
+  height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.create_join_btn {
+  outline:none;
+  border-radius: 10px;
+  background-color: #1DB954;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 34px;
+  width: 300px;
+  height: 100%;
+  transition: all 0.5s;
+  cursor: pointer;
+  font-style: "proxima-nova", sans-serif;
+}
+
+.create_join_span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.create_join_span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.create_join_btn:hover span {
+  padding-right: 25px;
+}
+
+.create_join_btn:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.party_name_code_text {
+  padding-left: 10px;
+  outline:none;
+  border-radius: 10px;
+  font-size: 28px;
+  font-style: "proxima-nova", sans-serif;
+}
+
+
+#join_party_div{
+  margin-top: 30px;
+}
+
+#partyNametxt {
+  display: none;
+  animation: fade_txtbxin 1s;
+  animation-play-state: paused;
+  animation-fill-mode: forwards;
+}
+
+#partyCodetxt {
+  display: none;
+  animation: fade_txtbxin 1s;
+  animation-play-state: paused;
+  animation-fill-mode: forwards;
+}
+
+#create_party_btn {
+  animation: drift_left 1s;
+  animation-play-state: paused;
+  animation-fill-mode: forwards;
+}
+
+#join_party_btn {
+  animation: drift_left 1s;
+  animation-play-state: paused;
+  animation-fill-mode: forwards;
+}
+
+@keyframes slam
+{
+  0%
+  {
+    transform: scale(10, 10);
+    opacity: 0;
+  }
+
+  40%
+  {
+    opacity: 0;
+  }
+
+  100%
+  {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+}
+
+@keyframes rattle
+{
+  0% { margin-top: 0; margin-left: 0; }
+  10% { margin-top: -5px; margin-left: 0; }
+  20% { margin-top: 0; margin-left: -5px; }
+  30% { margin-top: 5px; margin-left: 0; }
+  40% { margin-top: 0; margin-left: 5px; }
+  50% { margin-top: -2px; margin-left: 0; }
+  60% { margin-top: 0; margin-left: -2px; }
+  70% { margin-top: 2px; margin-left: 0; }
+  80% { margin-top: 0; margin-left: 2px; }
+  90% { margin-top: -1px; margin-left: 0; }
+  100% { margin-top: 0; margin-left: 0; }
+}
+
+@keyframes button_down {
+  0% {
+    opacity: 0;
+    margin-top: -60px;
+  }
+
+  100% {
+    opacity: 1;
+    margin-top: 30px;
+  }
+}
+
+@keyframes drift_left {
+  10% {
+    margin-right: 0px;
+  }
+
+  100% {
+    margin-right: 50px;
+  }
+}
+
+@keyframes fade_txtbxin {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
