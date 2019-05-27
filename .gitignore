@@ -13,6 +13,7 @@
 !*.html
 !*.php
 !*.js
+!*.css
 
 #C++
 !*.cpp
