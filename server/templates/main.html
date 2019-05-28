@@ -1,127 +1,129 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
-    <script src="util.js"></script>
-    <title>Spotify Party</title>
-  </head>
-  <body onload="start()">
-    <div class="container-fluid" style="background:#ffffff; color:#191414;">
-      <div class="row">
-	<div class="col-12 col-md-4 p-0">
-	  <nav class="navbar" style="justify-content:flex-start; background:#191414;">
-	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#parties">
-	      <span class="material-icons" style="color:#1db954">menu</span>
-	    </button>
-	    <span class="navbar-brand" style="color:#1db954">Spotify Party</span>
-	    <div class="collapse navbar-collapse" id="parties">
-	      <ul class="navbar-nav">
-		<li class="nav-item" id="filler">
-		</li>
-		<li class="nav-item" id="1"  onclick="setParty($(this))">
-		  <a class="nav-link" href="#">Party 1</a>
-		</li>
-		<li class="nav-item" id="2" onclick="setParty($(this))">
-		  <a class="nav-link" href="#">Party 2</a>
-		</li>
-		<li class="nav-item" id="3" onclick="setParty($(this))">
-		  <a class="nav-link" href="#">Party 3</a>
-		</li>
-	      </ul>
-	    </div>
-	  </nav>
-	</div>
 
-	<div class="p-0 col-12 col-md-8">
-	  <div style="height:56px; color:#1db954; background:#191414;">
-	    <div class="float-right" style="height:56px;">
-	      <i class="material-icons" style="font-size:48px;padding-top:4px;" onclick="startPlayback()">play_circle_filled</i>
-	      <button type="button" class="btn btn-primary" style="margin:9px;vertical-align:top" data-toggle="modal" data-target="#myModal">
-		Add song
-	      </button>
-	    </div>
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
+  <script src="util.js"></script>
+  <title>Spotify Party</title>
+</head>
 
-	    <div class="modal" id="myModal">
-	      <div class="modal-dialog">
-		<div class="modal-content" style="background:#191414; color:#1db954">
+<body onload="start()">
+  <div class="container-fluid" style="background:#ffffff; color:#191414;">
+    <div class="row">
+      <div class="col-12 col-md-4 p-0">
+        <nav class="navbar" style="justify-content:flex-start; background:#191414;">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#parties">
+            <span class="material-icons" style="color:#1db954">menu</span>
+          </button>
+          <span class="navbar-brand" style="color:#1db954">Spotify Party</span>
+          <div class="collapse navbar-collapse" id="parties">
+            <ul class="navbar-nav">
+              <li class="nav-item" id="filler">
+              </li>
+              <li class="nav-item" id="1" onclick="setParty($(this))">
+                <a class="nav-link" href="#">Party 1</a>
+              </li>
+              <li class="nav-item" id="2" onclick="setParty($(this))">
+                <a class="nav-link" href="#">Party 2</a>
+              </li>
+              <li class="nav-item" id="3" onclick="setParty($(this))">
+                <a class="nav-link" href="#">Party 3</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
 
+      <div class="p-0 col-12 col-md-8">
+        <div id="right-top-bar" style="height:56px; color:#1db954; background:#191414;">
 
-		  <div class="modal-header">
-		    <h4 class="modal-title">Add Song</h4>
-		    <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>
-		  </div>
+          <div class="float-right" style="height:56px;">
+            <i class="material-icons" style="font-size:48px;padding-top:4px;" onclick="startPlayback()">play_circle_filled</i>
+            <button type="button" class="btn btn-primary" style="margin:9px;vertical-align:top" data-toggle="modal" data-target="#myModal">
+              Add song
+            </button>
+          </div>
+          <div class="modal" id="myModal">
+            <div class="modal-dialog">
+              <div class="modal-content" style="background:#191414; color:#1db954">
 
-		  <div class="modal-body" style="background:#1db954; color:#191414">
+                <div class="modal-header">
+                  <h4 class="modal-title">Add Song</h4>
+                  <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>
+                </div>
 
-		    <div class="input-group mb-3">
-		      <input type="text" class="form-control" placeholder="Search">
-		      <div class="input-group-append" onclick="search($(this).prev().val())">
-			<button class="input-group-text material-icons btn-primary">search</button>
-		      </div>
-		    </div>
+                <div class="modal-body" style="background:#1db954; color:#191414">
 
-		    <ul class="list-group" id="results">
-		      <li class="list-group-item" id="123">Song
-			<button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
-			  Add
-			</button>
-		      </li>
-		    </ul>
-		  </div>
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search">
+                    <div class="input-group-append" onclick="search($(this).prev().val())">
+                      <button class="input-group-text material-icons btn-primary">search</button>
+                    </div>
+                  </div>
 
-		  <div class="modal-footer">
-		    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-		  </div>
+                  <ul class="list-group" id="results">
+                    <li class="list-group-item" id="123">Song
+                      <button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
+                        Add
+                      </button>
+                    </li>
+                  </ul>
+                </div>
 
-		</div>
-	      </div>
-	    </div>
-	  </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
 
-	  <ul class="list-group" id="tracks">
-	    <li class="list-group-item" id="41242421">First item
-	      <i class="material-icons float-right">
-		<span class="thup" onclick="upvote($(this))">
-		  thumb_up
-		</span>
-		<span class="thdn" onclick="downvote($(this))">
-		  thumb_down
-		</span>
-	      </i>
-	    </li>
-	    <li class="list-group-item" id="41262421">
-	      First item
-	      <i class="material-icons float-right">
-		<span class="thup" onclick="upvote($(this))">
-		  thumb_up
-		</span>
-		<span class="thdn" onclick="downvote($(this))">
-		  thumb_down
-		</span>
-	      </i>
-	    </li>
-	    <li class="list-group-item" id="41247421">
-	      First item
-	      <i class="material-icons float-right">
-		<span class="thup" onclick="upvote($(this))">
-		  thumb_up
-		</span>
-		<span class="thdn" onclick="downvote($(this))">
-		  thumb_down
-		</span>
-	      </i>
-	    </li>
-	  </ul>
-	</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="list-group" id="tracks">
+          <li class="list-group-item" id="41242421">First item
+            <i class="material-icons float-right">
+              <span class="thup" onclick="upvote($(this))">
+                thumb_up
+              </span>
+              <span class="thdn" onclick="downvote($(this))">
+                thumb_down
+              </span>
+            </i>
+          </li>
+          <li class="list-group-item" id="41262421">
+            First item
+            <i class="material-icons float-right">
+              <span class="thup" onclick="upvote($(this))">
+                thumb_up
+              </span>
+              <span class="thdn" onclick="downvote($(this))">
+                thumb_down
+              </span>
+            </i>
+          </li>
+          <li class="list-group-item" id="41247421">
+            First item
+            <i class="material-icons float-right">
+              <span class="thup" onclick="upvote($(this))">
+                thumb_up
+              </span>
+              <span class="thdn" onclick="downvote($(this))">
+                thumb_down
+              </span>
+            </i>
+          </li>
+        </ul>
       </div>
     </div>
-</div>
+  </div>
+  </div>
 </body>
+
 </html>

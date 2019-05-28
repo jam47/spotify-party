@@ -80,13 +80,14 @@ class PlaybackHandler:
                 return True
         return False
 
-    def start_playback(self, offset = None):
+    def start_playback(self, offset = None, device_id = None):
         self.refresh_token_if_necessary()
         playlist_uri = self.playlist_id
         if offset:
-            self.sp.start_playback(context_uri=playlist_uri)
+                self.sp.start_playback(context_uri=playlist_uri, device_id=device_id)
+
         else:
-            self.sp.start_playback(context_uri=playlist_uri, offset=offset)
+            self.sp.start_playback(context_uri=playlist_uri, offset=offset, device_id=device_id)
 
     def authenticate_user(self):
         print(self.credentials["redirect_url"])
@@ -129,3 +130,14 @@ class PlaybackHandler:
 
     def get_username_from_spotipy(self):
         return self.sp.current_user()["id"]
+
+
+    def get_device_names(self):
+        device_names =[]
+        for device in self.sp.devices()["devices"]:
+            device_info_json = {
+                "name" : device["name"],
+                "id" : device["id"]
+            }
+            device_names.append(device_info_json);
+        return device_names

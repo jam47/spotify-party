@@ -58,3 +58,59 @@ a{
 a:hover{
     color:#ffffff;
 }
+
+#device_selection_box {
+  font-family: "proxima_nova",sans-serif;
+}
+
+#device_selection_box select{
+  display: none;
+}
+
+.selected_device {
+  background-color: #1DB954;
+  margin-right: 30px;
+  display: inline-block;
+  margin-top: 6px;
+  font-family: sans-serif;
+}
+
+
+.selected_device_arrow {
+  margin-top: 10px;
+  margin-left: 3px;
+  float:right;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+}
+
+.select-devices div, .selected_device {
+  color: #ffffff;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+  user-select: none;
+}
+
+.select-devices {
+  position: sticky;
+  background-color: black;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.hidden {
+  display: none;
+}
+
+.select-devices div:hover, .same-as-selected-device {
+  background-color: #1DB954;
+}

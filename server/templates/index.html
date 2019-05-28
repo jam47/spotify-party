@@ -33,6 +33,10 @@
           if (already_present_warning != null) {
             body.removeChild(already_present_warning);
           }
+          partyNametxt.classList.add("shake");
+          partyNametxt.addEventListener("animationend", (e) => {
+          partyNametxt.classList.remove("shake");
+          });
           var warning_message_div = document.createElement("div");
           warning_message_div.innerHTML = "<p>Party name can only contain letters, numbers, spaces, hyphens and underscores.</p>";
           warning_message_div.className = "warning_msg";

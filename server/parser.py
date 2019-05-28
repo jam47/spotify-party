@@ -21,6 +21,7 @@ def parse(strMsg):
             "getSearchResults":getSearchResults,
             "sendVote":addVotes,
             "auth":getRedirectUrl,
+            "getDevices":getDevices,
             "getSongs":getCurrentSongsOrdered,
             "setAuthToken":proccessAuthenicationURL
         }
@@ -53,6 +54,17 @@ def proccessAuthenicationURL(partyid, data):
     token = partyids[partyid].playbackHandler.get_auth_token(data)
     if token:
         partyids[partyid].authenticate(token)
+        return {
+            "rtype":"authenticated",
+            "data":""
+        }
+
+
+def getDevices(partyid,  data):
+    return {
+        "rtype":"setDevices",
+        "data": partyids[partyid].playbackHandler.get_device_names()
+    }
 
 
 def startPlayback(partyid, data):
@@ -62,7 +74,7 @@ def startPlayback(partyid, data):
     room.playbackHandler.add_song_end(firstSongToPlay)
     room.playbackHandler.add_song_end(room.getMostUpvotedNotPlayedToPlay())
     room.playbackHandler.add_song_end(SILENT_TRACK_URI)
-    room.playbackHandler.start_playback()
+    room.playbackHandler.start_playback(device_id=data)
     partyids[partyid].started = True
 
 
