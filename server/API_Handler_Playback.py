@@ -12,7 +12,7 @@ class PlaybackHandler:
         credentials = json.load(credentials_file)
 
     def __init__(self, playlist_name):
-        self.scope = 'playlist-modify-private playlist-read-private user-read-playback-state user-modify-playback-state'
+        self.scope = 'playlist-modify-private playlist-modify-public playlist-read-private user-read-playback-state user-modify-playback-state'
         self.username = None
         self.playlist_id = None
         self.playlist_name = playlist_name
@@ -24,6 +24,7 @@ class PlaybackHandler:
         self.refresh_token_if_necessary()
         result = self.sp.user_playlist(self.username, self.playlist_id, fields="tracks")
         return result["tracks"]["total"]
+
     def add_songs_end(self, uris):
         self.refresh_token_if_necessary()
         if not self.check_playlist_exists():
@@ -39,7 +40,6 @@ class PlaybackHandler:
         self.refresh_token_if_necessary()
         self.sp.user_playlist_add_tracks(self.username, self.playlist_id, [uri], position=offset)
 
-
     def remove_song(self, uri):
         self.refresh_token_if_necessary()
         assert self.check_playlist_exists(), "Playlist must exist before song can be removed"
@@ -47,18 +47,25 @@ class PlaybackHandler:
 
     def create_playlist(self):
         self.refresh_token_if_necessary()
-        if not self.check_playlist_exists():
-            playlist = self.sp.user_playlist_create(self.username, self.playlist_name, False)
-            self.playlist_id = "spotify:user:" + self.username + ":playlist:" + playlist.get("id")
+        if self.check_playlist_exists():
+            self.delete_playlist(self.get_playlist_id(self.playlist_name))
+        playlist = self.sp.user_playlist_create(self.username, self.playlist_name, False)
+        self.playlist_id = "spotify:user:" + self.username + ":playlist:" + playlist.get("id")
 
-    def delete_playlist(self):
+    def delete_playlist(self, playlistid = None):
+        if playlistid == None:
+            playlistid = self.playlist_id.split(":")[4]
         self.refresh_token_if_necessary()
         assert self.check_playlist_exists(), "Playlist must exist before deletion"
-        self.sp.user_playlist_unfollow(self.username, self.playlist_id)
+        self.sp.user_playlist_unfollow(self.sp.current_user()["id"], playlistid)
 
     def currently_playing_uri(self):
         self.refresh_token_if_necessary()
-        return self.sp.currently_playing().get("item").get("uri")
+        currently_playing = self.sp.currently_playing()
+        if  currently_playing != None:
+            return currently_playing.get("item").get("uri")
+        else:
+            return None
 
     def get_uri_playlist_offset(self, offset):
         self.refresh_token_if_necessary()
@@ -79,6 +86,14 @@ class PlaybackHandler:
                 self.playlist_id = playlist.get("id")
                 return True
         return False
+
+    def get_playlist_id(self, playlist_name):
+        self.refresh_token_if_necessary()
+        playlists = self.sp.current_user_playlists()
+        for playlist in playlists.get("items"):
+            if playlist.get("name") == playlist_name:
+                return playlist.get("id")
+        return None
 
     def start_playback(self, offset = None, device_id = None):
         self.refresh_token_if_necessary()
@@ -141,3 +156,14 @@ class PlaybackHandler:
             }
             device_names.append(device_info_json);
         return device_names
+
+    def pause_playback(self):
+        self.refresh_token_if_necessary()
+        self.sp.pause_playback()
+
+    def check_if_paused(self):
+        currentlyPlaying = self.sp.current_playback()
+        if currentlyPlaying !=None :
+            return not ["is_playing"]
+        else:
+            return None

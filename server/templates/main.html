@@ -19,10 +19,11 @@
     <div class="row">
       <div class="col-12 col-md-4 p-0">
         <nav class="navbar" style="justify-content:flex-start; background:#191414;">
+
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#parties">
             <span class="material-icons" style="color:#1db954">menu</span>
           </button>
-          <span class="navbar-brand" style="color:#1db954">Spotify Party</span>
+          <span class="navbar-brand" id="spotify-party-logo" style="color:#1db954">Spotify Party</span>
           <div class="collapse navbar-collapse" id="parties">
             <ul class="navbar-nav">
               <li class="nav-item" id="filler">
@@ -45,7 +46,7 @@
         <div id="right-top-bar" style="height:56px; color:#1db954; background:#191414;">
 
           <div class="float-right" style="height:56px;">
-            <i class="material-icons" style="font-size:48px;padding-top:4px;" onclick="startPlayback()">play_circle_filled</i>
+            <i class="material-icons" id="play-stop-icon" style="font-size:48px;padding-top:4px;" onclick="startPlayback()">play_circle_filled</i>
             <button type="button" class="btn btn-primary" style="margin:9px;vertical-align:top" data-toggle="modal" data-target="#myModal">
               Add song
             </button>

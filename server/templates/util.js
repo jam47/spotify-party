@@ -2,6 +2,7 @@ var idGlob;
 var deviceInterval;
 var upvoteVotedColor = "rgb(0, 255, 0)";
 var downvoteVotedColor = "rgb(255, 0, 0)";
+var playing = false
 function sendMessage(msg) {
   console.log("Sending: " + msg);
   socket.send(msg);
@@ -42,15 +43,17 @@ socket.on('message', function(msg) {
     } else if (obj.rtype == "authenticated") {
       startDeviceRequests();
     } else if (obj.rtype == "setDevices") {
-      console.log("setting devices!")
-      setDevices(obj);
+      if (!playing) {
+        console.log("setting devices!")
+        setDevices(obj);
+      }
     }
   }
 });
 
 function startDeviceRequests() {
   deviceInterval = setInterval(requestDevices, 3000);
-  }
+}
 
 function requestDevices() {
   var obj = {
@@ -213,23 +216,37 @@ function closeAllSelect(elmnt) {
 
 
 function startPlayback(e) {
-//// TODO: work out why requests are still happening
-  clearInterval(requestDevices);
+
   var deviceSelectionBox = document.getElementById("device_selection_box");
   if (deviceSelectionBox.selectedIndex != 0) {
-    // TODO: revalidate that device hasn't become unavailable
-    var selected_id = deviceSelectionBox[deviceSelectionBox.selectedIndex]. value;
-    var obj = {
-      partyid : idGlob,
-      rtype : "startPlayback",
-      data : selected_id
+    var tracks = document.getElementById("tracks")
+    var number_of_songs = tracks.children.length
+    if (number_of_songs >= 2) {
+      //// TODO: work out why requests are still happening
+      clearInterval(deviceInterval);
+      playing = true
+      // TODO: revalidate that device hasn't become unavailable
+      var selected_id = deviceSelectionBox[deviceSelectionBox.selectedIndex]. value;
+      var obj = {
+        partyid : idGlob,
+        rtype : "startPlayback",
+        data : selected_id
+      }
+      var json = JSON.stringify(obj);
+      if (obj.partyid){
+        sendMessage(json);
+      }
+      var icon = document.getElementById("play-stop-icon")
+      icon.innerHTML = "stop"
+      var device_s_box_div = document.getElementById("device_selection_box_div");
+      device_s_box_div.remove();
+      closeAllSelect()
+    } else {
+        window.alert("You must add at least 2 songs to start a party");
     }
-    var json = JSON.stringify(obj);
-    if (obj.partyid){
-      sendMessage(json);
-    }
+
   } else {
-    window.alert("Please select a devicea");
+    window.alert("Please select a device");
   }
 
 }

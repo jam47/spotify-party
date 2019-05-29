@@ -13,22 +13,23 @@ partyids = {}
 def parse(strMsg):
     msg = json.loads(strMsg)
     print(msg)
-    if msg["partyid"] in partyids:
-        switcher = {
-            "addSong":addSong,
-            "closeRoom":closeRoom,
-            "startPlayback":startPlayback,
-            "getSearchResults":getSearchResults,
-            "sendVote":addVotes,
-            "auth":getRedirectUrl,
-            "getDevices":getDevices,
-            "getSongs":getCurrentSongsOrdered,
-            "setAuthToken":proccessAuthenicationURL
-        }
-        function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
-        return json.dumps(function(msg["partyid"], msg["data"]))
-    if msg["rtype"] == "createRoom":
-        return json.dumps(createRoom(msg["data"]))
+    if "partyid" in  msg:
+        if msg["partyid"] in partyids:
+            switcher = {
+                "addSong":addSong,
+                "closeRoom":closeRoom,
+                "startPlayback":startPlayback,
+                "getSearchResults":getSearchResults,
+                "sendVote":addVotes,
+                "auth":getRedirectUrl,
+                "getDevices":getDevices,
+                "getSongs":getCurrentSongsOrdered,
+                "setAuthToken":proccessAuthenicationURL
+            }
+            function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
+            return json.dumps(function(msg["partyid"], msg["data"]))
+        if msg["rtype"] == "createRoom":
+            return json.dumps(createRoom(msg["data"]))
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
@@ -70,12 +71,16 @@ def getDevices(partyid,  data):
 def startPlayback(partyid, data):
     room = partyids[partyid]
     firstSongToPlay = room.getMostUpvotedNotPlayedToPlay()
+    secondSongToPlay = room.getMostUpvotedNotPlayedToPlay()
     room.setCurrentlyPlayingSong(firstSongToPlay)
+    room.playbackHandler.create_playlist()
     room.playbackHandler.add_song_end(firstSongToPlay)
-    room.playbackHandler.add_song_end(room.getMostUpvotedNotPlayedToPlay())
+    room.playbackHandler.add_song_end(secondSongToPlay)
     room.playbackHandler.add_song_end(SILENT_TRACK_URI)
     room.playbackHandler.start_playback(device_id=data)
     partyids[partyid].started = True
+    partyids[partyid].queuedSong = secondSongToPlay
+
 
 
 #Negative number of votes for downvotes
@@ -104,6 +109,7 @@ def getCurrentSongsOrdered(partyid,data):
 def mainLoop():
     while True:
         updateAllPlaylists()
+        removeInactivePlaylists()
         time.sleep(1)
 
 def getRedirectUrl(partyid, data):
@@ -127,22 +133,89 @@ def getRedirectUrl(partyid, data):
 #     partyids[partyid].playbackHandler.authenticate(data)
 #     print("FINISHED AUTHENTICATION with code", data)
 
-def updateAllPlaylists():
+def removeInactivePlaylists():
+    inactive = getInactivePlaylistIds()
+    for inactiveId in inactive:
+        partyids[inactiveId].playbackHandler.delete_playlist()
+        partyids.pop(inactiveId)
+
+def getInactivePlaylistIds():
+    inactive = []
     for partyId in partyids:
-        if (partyids[partyId].isActive()):
-            if partyids[partyId].started and partyids[partyId].currentlyPlayingSong != None:
-                partyids[partyId].playbackHandler.refreshPlaylist()
-                if partyids[partyId].currentlyPlayingSong != partyids[partyId].playbackHandler.currently_playing_uri():
+        if not partyids[partyId].isActive():
+            inactive.append(partyId)
+    return inactive
+
+def updateAllPlaylists():
+    print(partyids)
+    for partyId in partyids:
+        if partyids[partyId].started and partyids[partyId].currentlyPlayingSong != None:
+            partyids[partyId].playbackHandler.refreshPlaylist()
+            if not partyids[partyId].paused:
+                actual_uri_playing = partyids[partyId].playbackHandler.currently_playing_uri()
+                if partyids[partyId].currentlyPlayingSong != actual_uri_playing:
                     print("NOT SAME SONG")
-                    previousSongUri = partyids[partyId].currentlyPlayingSong
-                    partyids[partyId].currentlyPlayingSong = partyids[partyId].playbackHandler.currently_playing_uri()
-                    partyids[partyId].playbackHandler.add_song_end(partyids[partyId].getMostUpvotedNotPlayedToPlay())
-                    partyids[partyId].playbackHandler.remove_song(previousSongUri)
-                    if partyids[partyId].currentlyPlayingSong == SILENT_TRACK_URI:
+                    if actual_uri_playing == partyids[partyId].queuedSong:
+                        if not partyids[partyId].missingSong:
+                            nextToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()
+
+                            #update previous song and current song
+                            previousSongUri = partyids[partyId].currentlyPlayingSong
+                            partyids[partyId].currentlyPlayingSong = actual_uri_playing
+                            if nextToPlay != None:
+                                partyids[partyId].playbackHandler.add_song_end(nextToPlay)
+                            else:
+                                partyids[partyId].missingSong = True
+                            partyids[partyId].playbackHandler.remove_song(previousSongUri)
+                            if partyids[partyId].currentlyPlayingSong == SILENT_TRACK_URI:
+                                #not second song playing
+                                partyids[partyId].playbackHandler.remove_song(SILENT_TRACK_URI)
+                                partyids[partyId].playbackHandler.add_song_offset(SILENT_TRACK_URI, 1)
+                                partyids[partyId].currentlyPlayingSong = partyids[partyId].playbackHandler.get_uri_playlist_offset(0)
+                                partyids[partyId].playbackHandler.start_playback()
+
+                            partyids[partyId].queuedSong = SILENT_TRACK_URI
+                        else:
+                            if partyids[partyId].getNumberOfUnplayedSongs() < 2:
+                                if not partyids[partyId].paused:
+                                    previousSongUri = partyids[partyId].currentlyPlayingSong
+                                    partyids[partyId].playbackHandler.remove_song(previousSongUri)
+                                    partyids[partyId].playbackHandler.pause_playback()
+
+                                    partyids[partyId].paused = True
+                            else:
+                                partyids[partyId].playbackHandler.remove_song(SILENT_TRACK_URI)
+                                firstSongToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()
+                                secondSongToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()
+                                partyids[partyId].setCurrentlyPlayingSong(firstSongToPlay)
+                                partyids[partyId].playbackHandler.add_song_end(firstSongToPlay)
+                                partyids[partyId].playbackHandler.add_song_end(secondSongToPlay)
+                                partyids[partyId].playbackHandler.add_song_end(SILENT_TRACK_URI)
+                                partyids[partyId].playbackHandler.start_playback()
+                                partyids[partyId].queuedSong = secondSongToPlay
+                                partyids[partyId].paused = False
+                                partyids[partyId].missingSong = False
+
+                    else:
+                        #if playing song deviates from those set then either lost connection or user has overridden playing songs, in either case quit party
+                        partyids[partyId].setInactive()
+            else:
+                actual_uri_playing = partyids[partyId].playbackHandler.currently_playing_uri()
+                if actual_uri_playing == SILENT_TRACK_URI or actual_uri_playing == None:
+                    if partyids[partyId].getNumberOfUnplayedSongs() >= 2 and partyids[partyId].playbackHandler.currently_playing_uri() != None:
                         partyids[partyId].playbackHandler.remove_song(SILENT_TRACK_URI)
-                        partyids[partyId].playbackHandler.add_song_offset(SILENT_TRACK_URI, 1)
-                        partyids[partyId].currentlyPlayingSong = partyids[partyId].playbackHandler.get_uri_playlist_offset(0)
+                        firstSongToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()
+                        secondSongToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()
+                        partyids[partyId].setCurrentlyPlayingSong(firstSongToPlay)
+                        partyids[partyId].playbackHandler.add_song_end(firstSongToPlay)
+                        partyids[partyId].playbackHandler.add_song_end(secondSongToPlay)
+                        partyids[partyId].playbackHandler.add_song_end(SILENT_TRACK_URI)
                         partyids[partyId].playbackHandler.start_playback()
-        else:
-            partyids[partyId].playbackHandler.delete_playlist()
-            partyids.pop(partyId)
+                        partyids[partyId].queuedSong = secondSongToPlay
+                        partyids[partyId].paused = False
+                        partyids[partyId].missingSong = False
+                    elif partyids[partyId].playbackHandler.currently_playing_uri() != None and not partyids[partyId].playbackHandler.check_if_paused():
+                        partyids[partyId].playbackHandler.pause_playback()
+                else:
+                    partyids[partyId].setInactive()
+

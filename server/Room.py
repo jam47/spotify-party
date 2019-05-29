@@ -10,9 +10,12 @@ class PartyRoom:
         self.started = False
         self.currentlyPlayingSong = None
         self.isActiveVal = True
-        self.playbackHandler = PlaybackHandler("Spotify Party")
+        self.playbackHandler = PlaybackHandler("SpotifyParty:" + name)
         self.username = None
         self.party_name = name
+        self.queuedSong = None
+        self.missingSong = False
+        self.paused = False
 
     def addSong(self, jsonSong):
         sh = SearchHandler()
@@ -53,9 +56,10 @@ class PartyRoom:
 
     def getMostUpvotedNotPlayedToPlay(self):
         for song in self.songList:
-            if (not song["played"]):
+            if not song["played"]:
                 song["played"] = True
                 return song["uri"]
+        return None
 
     def isActive(self):
         return self.isActiveVal
@@ -67,10 +71,17 @@ class PartyRoom:
         currentUnplayedSongs = []
 
         for song in self.songList:
-            if song["played"] == False:
+            if not song["played"]:
                 currentUnplayedSongs.append(song)
 
         return currentUnplayedSongs
+
+    def getNumberOfUnplayedSongs(self):
+        numberOfUnplayedSongs = 0
+        for song in self.songList:
+            if not song["played"]:
+                numberOfUnplayedSongs += 1
+        return numberOfUnplayedSongs
 
     def setCurrentlyPlayingSong(self, currentlyPlayingSong):
         self.currentlyPlayingSong = currentlyPlayingSong
