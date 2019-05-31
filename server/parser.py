@@ -41,14 +41,14 @@ def createRoom(room_name):
         code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(6))
         if code not in partyids:
             break
-    partyids[code] = PartyRoom(room_name)
+    partyids[code] = PartyRoom(room_name, code)
     return {
         "rtype":"roomCode",
         "data":code
     }
 
 def closeRoom(partyid, data):
-    partyids[data["partyid"]].setInactive()
+    partyids[partyid].setInactive()
 
 def proccessAuthenicationURL(partyid, data):
     print(data)
@@ -113,20 +113,14 @@ def mainLoop():
         time.sleep(1)
 
 def getRedirectUrl(partyid, data):
-    if not partyids[partyid].playbackHandler.get_cached_token():
-        print(partyids[partyid].playbackHandler.get_auth_url())
-        url = partyids[partyid].playbackHandler.get_auth_url()
-        return {
-                "rtype":"auth",
-                "data":url
-            }
-    else:
-        print("Don't need to redirect!")
-        partyids[partyid].authenticate(partyids[partyid].playbackHandler.get_refreshed_cached_token()["access_token"])
+    if partyids[partyid].playbackHandler.get_cached_token():
+        partyids[partyid].playbackHandler.remove_cache()
 
-        return {
-            "rtype": "auth",
-            "data": "None"
+    print(partyids[partyid].playbackHandler.get_auth_url())
+    url = partyids[partyid].playbackHandler.get_auth_url()
+    return {
+            "rtype":"auth",
+            "data":url
         }
 
 # def setAuthToken(partyid, data):
@@ -137,7 +131,9 @@ def removeInactivePlaylists():
     inactive = getInactivePlaylistIds()
     for inactiveId in inactive:
         partyids[inactiveId].playbackHandler.delete_playlist()
+        partyids[inactiveId].playbackHandler.remove_cache()
         partyids.pop(inactiveId)
+        print("REMOVED INCACTIVE PARTY " + inactiveId)
 
 def getInactivePlaylistIds():
     inactive = []
@@ -184,6 +180,8 @@ def updateAllPlaylists():
 
                                     partyids[partyId].paused = True
                             else:
+                                previousSongUri = partyids[partyId].currentlyPlayingSong
+                                partyids[partyId].playbackHandler.remove_song(previousSongUri)
                                 partyids[partyId].playbackHandler.remove_song(SILENT_TRACK_URI)
                                 firstSongToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()
                                 secondSongToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()

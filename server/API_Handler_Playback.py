@@ -2,7 +2,7 @@ import json
 import spotipy
 import spotipy.util as util
 from spotipy import oauth2
-
+import os
 
 
 
@@ -11,15 +11,18 @@ class PlaybackHandler:
     with open("credentials.json") as credentials_file:
         credentials = json.load(credentials_file)
 
-    def __init__(self, playlist_name):
+    def __init__(self, playlist_name, room_id):
         self.scope = 'playlist-modify-private playlist-modify-public playlist-read-private user-read-playback-state user-modify-playback-state'
         self.username = None
         self.playlist_id = None
         self.playlist_name = playlist_name
         self.sp = None
+        self.cache_path = "./cache/" + room_id
         self.sp_oauth = oauth2.SpotifyOAuth(self.credentials["client_id"], self.credentials["client_secret"],
                                             self.credentials["redirect_url"],
-                                            scope=self.scope, cache_path="cache")
+                                            scope=self.scope, cache_path=self.cache_path)
+
+
     def playlist_length(self):
         self.refresh_token_if_necessary()
         result = self.sp.user_playlist(self.username, self.playlist_id, fields="tracks")
@@ -63,7 +66,10 @@ class PlaybackHandler:
         self.refresh_token_if_necessary()
         currently_playing = self.sp.currently_playing()
         if  currently_playing != None:
-            return currently_playing.get("item").get("uri")
+            if currently_playing.get("item") != None:
+                return currently_playing.get("item").get("uri")
+            else:
+                return None
         else:
             return None
 
@@ -127,6 +133,7 @@ class PlaybackHandler:
 
     def refresh_token_if_necessary(self):
         if self.is_cached_token_expired():
+            print("TOKEN EXPIRED")
             self.authenticate(self.get_refreshed_cached_token()["access_token"])
 
     def get_auth_url(self):
@@ -167,3 +174,9 @@ class PlaybackHandler:
             return not ["is_playing"]
         else:
             return None
+
+    def remove_cache(self):
+        if os.path.exists(self.cache_path):
+            os.remove(self.cache_path)
+        else:
+            print("Cache is not present")

@@ -12,8 +12,8 @@
      let ctx = c.getContext('2d');
 
      c.style.position = 'absolute';
-     c.style.left = (x - 100) + 'px';
-     c.style.top = (y - 100) + 'px';
+     c.style.left = (x) + 'px';
+     c.style.top = (y ) + 'px';
      c.style.pointerEvents = 'none';
      c.style.width = 500 + 'px';
      c.style.height = 900 + 'px';
@@ -74,8 +74,9 @@
 //Run the thing
 const party_text = document.getElementById('main_party_txt');
 party_text.addEventListener('animationend', (e) => {
- x = (window.innerWidth / 2) - 150;
- y = party_text.offsetTop - 150;
+  var bounding_rect = party_text.getBoundingClientRect();
+ x = (bounding_rect.width / 2) - 250;
+ y = bounding_rect.top + (bounding_rect.height / 2) - 450 + 100;
  explode(x, y);
  const buttons = document.getElementsByClassName('button_div');
  var i;

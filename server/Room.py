@@ -5,12 +5,13 @@ from server.API_Handler_Search import SearchHandler
 class PartyRoom:
 
     DEFAULT_VOTES = 0
-    def __init__(self, name):
+    def __init__(self, name, id):
         self.songList = []
         self.started = False
         self.currentlyPlayingSong = None
         self.isActiveVal = True
-        self.playbackHandler = PlaybackHandler("SpotifyParty:" + name)
+        self.id = id
+        self.playbackHandler = PlaybackHandler("SpotifyParty:" + name, id)
         self.username = None
         self.party_name = name
         self.queuedSong = None
