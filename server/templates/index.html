@@ -14,25 +14,29 @@
     <input type="text" placeholder="Enter Party Name" id="partyNametxt" class="party_name_code_text">
   </div>
   <div class="button_div" id="join_party_div">
-    <button type ="button" id="join_party_btn" class="create_join_btn" onclick="joinParty()">
+    <button type ="button" id="join_party_btn" class="create_join_btn" onclick="joinPartyBtn()">
       <span class="create_join_span">Join Party</span>
     </button>
     <input type="text" placeholder="Enter Party Code" id="partyCodetxt" class="party_name_code_text">
   </div>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
   <script type="text/javascript">
+    var N_CHAR_PCODE = 6;
     function createPartyBtn() {
       var partyNametxt = document.getElementById("partyNametxt");
       var partyNametxtstyle = window.getComputedStyle(partyNametxt);
       if (partyNametxtstyle.getPropertyValue("display") != "none") {
+        //only accept letters numbers, spaces, - and _ as valid characters in party name
         if (/^[\w\-\s]+$/.test(partyNametxt.value)) {
           createParty(partyNametxt.value);
         } else {
+          //display warning message
           var body = document.getElementsByTagName("BODY")[0];
           var already_present_warning = document.querySelector('.warning_msg');
           if (already_present_warning != null) {
             body.removeChild(already_present_warning);
           }
+          // TODO: fix shake animation
           partyNametxt.classList.add("shake");
           partyNametxt.addEventListener("animationend", (e) => {
           partyNametxt.classList.remove("shake");
@@ -55,6 +59,61 @@
         document.getElementById("partyNametxt").focus();
       }
     }
+
+    function joinPartyBtn() {
+      var joinPartyText = document.getElementById("partyCodetxt");
+      var jointPartyTextStyle = window.getComputedStyle(joinPartyText);
+      if (jointPartyTextStyle.getPropertyValue("display") != "none") {
+        var valid_pcode_regex = new RegExp("^[A-Z0-9]{" + N_CHAR_PCODE + "}$")
+        if (valid_pcode_regex.test(joinPartyText.value) ){
+          var partyId = joinPartyText.value;
+          request = {
+            "partyid":partyId,
+            "rtype":"checkIfPartyExists"
+          };
+          sendMessage(JSON.stringify(request));
+        } else {
+          var already_present_warning = document.querySelector('.warning_msg');
+          var body = document.getElementsByTagName("BODY")[0];
+          if (already_present_warning != null) {
+            body.removeChild(already_present_warning);
+          }
+          var warning_message_div = document.createElement("div");
+          warning_message_div.innerHTML = "<p>A valid party code contains a total of " +  N_CHAR_PCODE + " uppercase letters and numbers.</p>";
+          warning_message_div.className = "warning_msg";
+          warning_message_div.style.color = "#ffae42";
+          warning_message_div.style.textAlign = "center";
+          warning_message_div.style.marginTop = "40px";
+          body.appendChild(warning_message_div);
+          var warning_message_p = warning_message_div.firstChild;
+          warning_message_p.style.fontFamily = "proxima-nova, sans-serif";
+        }
+      } else {
+        var party_join_btn = document.getElementById("join_party_btn");
+        joinPartyText.style.display = "block";
+        party_join_btn.style.webkitAnimationPlayState = "running";
+        joinPartyText.style.webkitAnimationPlayState = "running";
+        document.getElementById("partyCodetxt").focus();
+      }
+    }
+
+    function displayPartyNonexistentError(partyid) {
+      var already_present_warning = document.querySelector('.warning_msg');
+      var body = document.getElementsByTagName("BODY")[0];
+      if (already_present_warning != null) {
+        body.removeChild(already_present_warning);
+      }
+      var warning_message_div = document.createElement("div");
+      warning_message_div.innerHTML = "<p>" + partyid + " isn't an active party.</p>";
+      warning_message_div.className = "warning_msg";
+      warning_message_div.style.color = "#ffae42";
+      warning_message_div.style.textAlign = "center";
+      warning_message_div.style.marginTop = "40px";
+      body.appendChild(warning_message_div);
+      var warning_message_p = warning_message_div.firstChild;
+      warning_message_p.style.fontFamily = "proxima-nova, sans-serif";
+    }
+
     function createParty(party_name) {
       request = {
         "partyid":"",
@@ -82,6 +141,10 @@
         window.location = message["data"];
       } else if (message["rtype"] == "roomCode") {
         window.location = "/main.html?id=" + message["data"];
+      } else if (message["rtype"] == "partyExists") {
+        joinParty(message["data"]);
+      } else if (message["rtype"] == "partyNonexistent") {
+        displayPartyNonexistentError(message["data"]);
       }
     });
   </script>

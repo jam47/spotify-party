@@ -30,6 +30,8 @@ def parse(strMsg):
             return json.dumps(function(msg["partyid"], msg["data"]))
         if msg["rtype"] == "createRoom":
             return json.dumps(createRoom(msg["data"]))
+        elif msg["rtype"] == "checkIfPartyExists":
+            return json.dumps(checkIfPartyExists(msg["partyid"]))
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
@@ -122,6 +124,21 @@ def getRedirectUrl(partyid, data):
             "rtype":"auth",
             "data":url
         }
+
+def checkIfPartyExists(partyid):
+    if partyid in partyids:
+        return {
+            "rtype": "partyExists",
+            "data": partyid
+        }
+    else:
+        return {
+            "rtype" : "partyNonexistent",
+            "data" : partyid
+        }
+
+
+
 
 # def setAuthToken(partyid, data):
 #     partyids[partyid].playbackHandler.authenticate(data)
