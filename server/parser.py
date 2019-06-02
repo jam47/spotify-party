@@ -7,31 +7,45 @@ import json
 from server.Room import PartyRoom
 from server.API_Handler_Search import SearchHandler
 
+from flask_socketio import close_room, emit, join_room
+
+from server.a import socketio, app
+
 SILENT_TRACK_URI = "spotify:track:7cctPQS83y620UQtMd1ilL"
 partyids = {}
 
 def parse(strMsg):
     msg = json.loads(strMsg)
     print(msg)
+    if msg["rtype"] == "checkIfPartyExists":
+        return json.dumps(checkIfPartyExists(msg["partyid"]))
     if "partyid" in  msg:
         if msg["partyid"] in partyids:
-            switcher = {
-                "addSong":addSong,
-                "closeRoom":closeRoom,
-                "startPlayback":startPlayback,
-                "getSearchResults":getSearchResults,
-                "sendVote":addVotes,
-                "auth":getRedirectUrl,
-                "getDevices":getDevices,
-                "getSongs":getCurrentSongsOrdered,
-                "setAuthToken":proccessAuthenicationURL
-            }
-            function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
-            return json.dumps(function(msg["partyid"], msg["data"]))
+            if partyids[msg["partyid"]].isActive():
+                switcher = {
+                    "addSong":addSong,
+                    "closeRoom":closeRoom,
+                    "startPlayback":startPlayback,
+                    "getSearchResults":getSearchResults,
+                    "sendVote":addVotes,
+                    "auth":getRedirectUrl,
+                    "getDevices":getDevices,
+                    "getSongs":getCurrentSongsOrdered,
+                    "setAuthToken":proccessAuthenicationURL
+                }
+                function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
+                return json.dumps(function(msg["partyid"], msg["data"]))
+            else:
+                return json.dumps(redirect_shutdown())
         if msg["rtype"] == "createRoom":
             return json.dumps(createRoom(msg["data"]))
-        elif msg["rtype"] == "checkIfPartyExists":
-            return json.dumps(checkIfPartyExists(msg["partyid"]))
+        else:
+            return json.dumps(redirect_shutdown())
+
+def redirect_shutdown():
+    return {
+                "rtype": "redirectShutdown"
+            }
 
 def addSong(partyid, data):
     partyids[partyid].addSong(data)
@@ -44,6 +58,7 @@ def createRoom(room_name):
         if code not in partyids:
             break
     partyids[code] = PartyRoom(room_name, code)
+    join_room(code)
     return {
         "rtype":"roomCode",
         "data":code
@@ -149,6 +164,7 @@ def removeInactivePlaylists():
     for inactiveId in inactive:
         partyids[inactiveId].playbackHandler.delete_playlist()
         partyids[inactiveId].playbackHandler.remove_cache()
+        socketio.close_room(inactiveId)
         partyids.pop(inactiveId)
         print("REMOVED INCACTIVE PARTY " + inactiveId)
 

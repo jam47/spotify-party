@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Start/Join a Party</title>
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
-  </head>
+
+<head>
+  <title>Start/Join a Party</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/index.css') }}">
+</head>
+
 <body>
   <span class="slam">Spotify</span>
   <div id='main_party_txt' class="slam slam_delayed">Party</div>
@@ -14,7 +16,7 @@
     <input type="text" placeholder="Enter Party Name" id="partyNametxt" class="party_name_code_text">
   </div>
   <div class="button_div" id="join_party_div">
-    <button type ="button" id="join_party_btn" class="create_join_btn" onclick="joinPartyBtn()">
+    <button type="button" id="join_party_btn" class="create_join_btn" onclick="joinPartyBtn()">
       <span class="create_join_span">Join Party</span>
     </button>
     <input type="text" placeholder="Enter Party Code" id="partyCodetxt" class="party_name_code_text">
@@ -22,6 +24,7 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
   <script type="text/javascript">
     var N_CHAR_PCODE = 6;
+
     function createPartyBtn() {
       var partyNametxt = document.getElementById("partyNametxt");
       var partyNametxtstyle = window.getComputedStyle(partyNametxt);
@@ -39,7 +42,7 @@
           // TODO: fix shake animation
           partyNametxt.classList.add("shake");
           partyNametxt.addEventListener("animationend", (e) => {
-          partyNametxt.classList.remove("shake");
+            partyNametxt.classList.remove("shake");
           });
           var warning_message_div = document.createElement("div");
           warning_message_div.innerHTML = "<p>Party name can only contain letters, numbers, spaces, hyphens and underscores.</p>";
@@ -65,11 +68,11 @@
       var jointPartyTextStyle = window.getComputedStyle(joinPartyText);
       if (jointPartyTextStyle.getPropertyValue("display") != "none") {
         var valid_pcode_regex = new RegExp("^[A-Z0-9]{" + N_CHAR_PCODE + "}$")
-        if (valid_pcode_regex.test(joinPartyText.value) ){
+        if (valid_pcode_regex.test(joinPartyText.value)) {
           var partyId = joinPartyText.value;
           request = {
-            "partyid":partyId,
-            "rtype":"checkIfPartyExists"
+            "partyid": partyId,
+            "rtype": "checkIfPartyExists"
           };
           sendMessage(JSON.stringify(request));
         } else {
@@ -79,7 +82,7 @@
             body.removeChild(already_present_warning);
           }
           var warning_message_div = document.createElement("div");
-          warning_message_div.innerHTML = "<p>A valid party code contains a total of " +  N_CHAR_PCODE + " uppercase letters and numbers.</p>";
+          warning_message_div.innerHTML = "<p>A valid party code contains a total of " + N_CHAR_PCODE + " uppercase letters and numbers.</p>";
           warning_message_div.className = "warning_msg";
           warning_message_div.style.color = "#ffae42";
           warning_message_div.style.textAlign = "center";
@@ -116,38 +119,38 @@
 
     function createParty(party_name) {
       request = {
-        "partyid":"",
-        "rtype":"createRoom",
+        "partyid": "",
+        "rtype": "createRoom",
         "data": party_name
       };
       sendMessage(JSON.stringify(request));
     }
-    function joinParty() {
-      code = document.getElementById("partyCodetxt").value;
 
-    }
     function sendMessage(msg) {
-        console.log("Sending: " + msg);
-        socket.send(msg);
+      console.log("Sending: " + msg);
+      socket.send(msg);
     }
 
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
-        socket.emit('my event', {data: 'I\'m connected!'});
+      socket.emit('my event', {
+        data: 'I\'m connected!'
+      });
     });
     socket.on('message', function(msg) {
       message = JSON.parse(msg);
       if (message["rtype"] == "auth") {
         window.location = message["data"];
       } else if (message["rtype"] == "roomCode") {
-        window.location = "/main.html?id=" + message["data"];
+        window.location = "/main-host.html?id=" + message["data"];
       } else if (message["rtype"] == "partyExists") {
-        joinParty(message["data"]);
+        window.location = "/main-member.html?id=" + message["data"];
       } else if (message["rtype"] == "partyNonexistent") {
         displayPartyNonexistentError(message["data"]);
       }
     });
   </script>
- <script src="index.js"></script>
+  <script src="index.js"></script>
 </body>
+
 </html>

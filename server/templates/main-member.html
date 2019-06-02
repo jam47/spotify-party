@@ -1,0 +1,9 @@
+{% extends "main-common.html" %}
+{% block js_file%}
+    {% assets "main_member_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+{% endblock %}
+{% block body_start %}
+    <body>
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/party-shutdown.css') }}">
+  <title>Party Shutdown</title>
+</head>
+
+<body>
+  <div id="shutdown_text_enc">
+    <div id="shutdown_text_start">The Party has been </div>
+    <div id="shutdown_text_animated">
+      <span class="shutdown_odd">
+          S
+      </span>
+      <span class="shutdown_even">
+          H
+      </span>
+      <span class="shutdown_odd">
+          U
+      </span>
+      <span class="shutdown_even">
+          T
+      </span>
+      <span class="shutdown_odd">
+          D
+      </span>
+      <span class="shutdown_even">
+          O
+      </span>
+      <span class="shutdown_odd">
+          W
+      </span>
+      <span class="shutdown_even">
+          N
+      </span>
+     </div>
+   </div>
+</body>
+
+<script type="text/javascript">
+  setTimeout(function () {
+   window.location = "start-join-party.html";  
+ }, 2500);
+</script>
+
+</html>

@@ -1,0 +1,12 @@
+{% extends "main-common.html" %}
+{% block js_file%}
+    {% assets "main_host_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+{% endblock %}
+{% block playback_icon %}
+<i class="material-icons" id="play-stop-icon" style="font-size:48px;padding-top:4px;" onclick="playStopPress()">play_circle_filled</i>
+{% endblock %}
+{% block body_start %}
+<body onload="start()">
+{% endblock %}
