@@ -9,6 +9,52 @@ function sendMessage(msg) {
   socket.send(msg);
 }
 
+function setPartyName(e) {
+  //// TODO: set name in parties
+  var idSpan = document.getElementById("party-id");
+  idSpan.innerHTML = idGlob;
+  var joinURL = document.getElementById("join-url");
+  var url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')  + "/main-member.html?id=" + idGlob
+  joinURL.innerHTML = url;
+  var joinURLQR = document.getElementById("join-qr-code");
+  new QRCode(joinURLQR, {
+    text: url,
+    width: 128,
+    height: 128,
+    colorDark : "#191414",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+});
+$("#join-qr-code > img").css({"border" : "20px solid white",
+  "border-radius" : "4px"});
+}
+
+function copyID(){
+  copyDivElementValue("party-id");
+}
+
+function copyDivElementValue(element_name) {
+  if (document.selection) { // IE
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(element_name));
+        range.select();
+        document.execCommand("copy");
+        document.selection.empty();
+    } else if (window.getSelection) {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(element_name));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges();
+    }
+}
+
+function copyUrl() {
+  copyDivElementValue("join-url");
+
+}
+
 function upvote(e) {
   if (e.css("color") == "rgb(0, 255, 0)") {
     e.css("color", "#000000");
@@ -204,7 +250,7 @@ function setSearch(e) {
     console.log(e.data.tracks[i].name)
     var html_out = "<li class='list-group-item' id=" + e.data.tracks[i].uri + ">" +
       e.data.tracks[i].name + "- " + e.data.tracks[i].artists + " - " + e.data.tracks[i].album +
-      "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"addSong($(this).parent().attr('id'))\">Add</button>" +
+      "<button type=\"button\" class=\"btn float-right sp_green_btn\" onclick=\"addSong($(this).parent().attr('id'))\">Add</button>" +
       "</li>"
     $("#results").append(html_out);
   }
@@ -257,6 +303,10 @@ socket.on('message', function(msg) {
         console.log("setting devices!")
         setDevices(obj);
       }
+    } else if (obj.rtype == "setPartyName") {
+      setPartyName(obj);
+    } else if (obj.rtype == "redirectShutdown") {
+      window.location = "/party-shutdown.html";
     }
   }
 });
@@ -501,7 +551,7 @@ function start() {
     }
     strAuthRequest = JSON.stringify(authRequest);
     sendMessage(strAuthRequest);
-  } else {
+    } else {
     console.log("Setting ID");
     var decodedCookie = decodeURIComponent(document.cookie);
     console.log(decodedCookie)
@@ -510,16 +560,37 @@ function start() {
     $("#parties").find(".1").addClass("active");
     $("#parties").find(".1").attr("id", id);
 
-    var authCode = url.searchParams.get("code");
-    authTokenData = {
-      "partyid": id,
-      "rtype": "setAuthToken",
-      "data": authCode
+    var error = url.searchParams.get("error");
+
+    if (error == null) {
+      var authCode = url.searchParams.get("code");
+      authTokenData = {
+        "partyid": id,
+        "rtype": "setAuthToken",
+        "data": authCode
+      }
+      strAuthTokenData = JSON.stringify(authTokenData);
+      sendMessage(strAuthTokenData);
+
+      var name_request = {
+        "partyid": id,
+        "rtype": "getPartyName",
+        "data": ""
+      }
+      sendMessage(JSON.stringify(name_request));
+      var unimportant = setInterval(() => {
+        getSongs(idGlob)
+      }, 2000);
+      setInterval(sendConnectionNotice, 3000);
+    } else {
+      closeRoom();
+      window.location = "/start-join-party.html"
     }
-    strAuthTokenData = JSON.stringify(authTokenData);
-    sendMessage(strAuthTokenData);
   }
-  var unimportant = setInterval(() => {
-    getSongs(idGlob)
-  }, 2000);
+
+
+}
+
+function sendConnectionNotice() {
+  socket.emit('host_connected', idGlob);
 }

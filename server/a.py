@@ -1,9 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send
 from flask_assets import Bundle, Environment
 from flask_socketio import join_room
 import parser
 import threading
+import json
+import time
 
 instance = 0
 
@@ -16,6 +18,8 @@ assets = Environment(app)
 
 assets.register("main_host_js", main_host_js)
 assets.register("main_member_js", main_member_js)
+
+hosts= {}
 
 
 @app.route('/')
@@ -30,16 +34,20 @@ def return_index_direct():
 
 @app.route('/main-host.html')
 def return_main_host():
+    id = request.args.get('id')
+    if id is not None:
+        sid = request.args.get('sid')
+        #joining when not the host of the party
+        if sid is None or hosts[sid]["party_id"] != id:
+            return render_template('index.html')
     return render_template('main-host.html')
+
+
 
 @app.route('/main-member.html')
 def return_main_member():
     return render_template('main-member.html')
 
-
-@app.route('/main-host-complete.js')
-def return_util():
-    return render_template('util.js')
 
 
 @app.route('/index.js')
@@ -47,10 +55,10 @@ def return_index_js():
     return render_template('index.js')
 
 
+
 @app.route('/main.css')
 def return_main_css():
     return render_template('main.css')
-
 
 @app.route('/index.css')
 def return_index_css():
@@ -76,12 +84,55 @@ def handle_message(msg):
 def connect_member(data):
     join_room(data["partyid"])
 
+@socketio.on('create_room')
+def create_room(data):
+    response = parser.createRoom(data["party_name"])
+    #associate host sid with party
+    hosts[request.sid] = {
+        "party_id" :response["data"]["code"],
+        "connection_verified" : True
+    }
+    response["data"]["sid"] = request.sid
+    send(json.dumps(response))
+
+# @socketio.on('disconnect')
+# def handle_disconnect():
+#     if request.sid in hosts:
+#         parser.partyids[hosts[request.sid]].setInactive()
+
+@socketio.on('host_connected')
+def update_connected_host(party_id):
+    if request.sid not in hosts:
+        for host_sid in hosts:
+            if hosts[host_sid]["party_id"] == party_id:
+                hosts.pop(host_sid)
+                hosts[request.sid] = {
+                "party_id" : party_id,
+                "connection_verified" : True
+                }
+    else:
+        host = hosts[request.sid]
+        if host is not None:
+            host["connection_verified"] = True
+
 
 def main_loop():
     parser.mainLoop()
 
+def verify_connections():
+    while True:
+        for host in hosts:
+            if not hosts[host]["connection_verified"]:
+                parser.partyids[hosts[host]["party_id"]].setInactive()
+            else:
+                hosts[host]["connection_verified"] = False
+        time.sleep(20)
+
 if __name__ == '__main__':
     mainLoopThread = threading.Thread(target=main_loop)
     mainLoopThread.start()
+    verify_connections_thread = threading.Thread(target=verify_connections)
+    verify_connections_thread.start()
     socketio.run(app)
+
 

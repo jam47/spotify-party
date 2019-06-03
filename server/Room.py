@@ -19,6 +19,12 @@ class PartyRoom:
         self.paused = False
 
     def addSong(self, jsonSong):
+        song_already_present = self.get_song_if_present(jsonSong)
+        if song_already_present is not None:
+            if song_already_present["played"]:
+                self.removeSong(jsonSong)
+            else:
+                return
         sh = SearchHandler()
         result = sh.get_track_by_uri(jsonSong)
         votedSong = {
@@ -40,6 +46,18 @@ class PartyRoom:
         else:
             self.songList.insert(i + 1, votedSong)
             print(self.songList)
+
+
+    def removeSong(self, uri):
+        for i in range(0, len(self.songList)):
+            if self.songList[i][uri] == uri:
+                self.songList.pop(i)
+
+    def get_song_if_present(self, uri):
+        for song in self.songList:
+            if song["uri"] == uri:
+                return song
+        return None
 
     def modifySongVotes(self, uri, voteModification):
         toModify = None

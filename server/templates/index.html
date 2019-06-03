@@ -117,13 +117,14 @@
       warning_message_p.style.fontFamily = "proxima-nova, sans-serif";
     }
 
-    function createParty(party_name) {
-      request = {
-        "partyid": "",
-        "rtype": "createRoom",
-        "data": party_name
-      };
-      sendMessage(JSON.stringify(request));
+    function createParty(partyName) {
+      // request = {
+      //   "partyid": "",
+      //   "rtype": "createRoom",
+      //   "data": party_name
+      // };
+      // sendMessage(JSON.stringify(request));
+      socket.emit('create_room', {party_name: partyName});
     }
 
     function sendMessage(msg) {
@@ -142,9 +143,9 @@
       if (message["rtype"] == "auth") {
         window.location = message["data"];
       } else if (message["rtype"] == "roomCode") {
-        window.location = "/main-host.html?id=" + message["data"];
+        window.location = "/main-host.html?id=" + message["data"]["code"] + "\&sid=" + message["data"]["sid"];
       } else if (message["rtype"] == "partyExists") {
-        window.location = "/main-member.html?id=" + message["data"];
+        window.location = "/main-member.html?id=" + message["data"]
       } else if (message["rtype"] == "partyNonexistent") {
         displayPartyNonexistentError(message["data"]);
       }

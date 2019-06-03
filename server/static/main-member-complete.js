@@ -9,6 +9,52 @@ function sendMessage(msg) {
   socket.send(msg);
 }
 
+function setPartyName(e) {
+  //// TODO: set name in parties
+  var idSpan = document.getElementById("party-id");
+  idSpan.innerHTML = idGlob;
+  var joinURL = document.getElementById("join-url");
+  var url = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')  + "/main-member.html?id=" + idGlob
+  joinURL.innerHTML = url;
+  var joinURLQR = document.getElementById("join-qr-code");
+  new QRCode(joinURLQR, {
+    text: url,
+    width: 128,
+    height: 128,
+    colorDark : "#191414",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+});
+$("#join-qr-code > img").css({"border" : "20px solid white",
+  "border-radius" : "4px"});
+}
+
+function copyID(){
+  copyDivElementValue("party-id");
+}
+
+function copyDivElementValue(element_name) {
+  if (document.selection) { // IE
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(element_name));
+        range.select();
+        document.execCommand("copy");
+        document.selection.empty();
+    } else if (window.getSelection) {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(element_name));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges();
+    }
+}
+
+function copyUrl() {
+  copyDivElementValue("join-url");
+
+}
+
 function upvote(e) {
   if (e.css("color") == "rgb(0, 255, 0)") {
     e.css("color", "#000000");
@@ -204,7 +250,7 @@ function setSearch(e) {
     console.log(e.data.tracks[i].name)
     var html_out = "<li class='list-group-item' id=" + e.data.tracks[i].uri + ">" +
       e.data.tracks[i].name + "- " + e.data.tracks[i].artists + " - " + e.data.tracks[i].album +
-      "<button type=\"button\" class=\"btn btn-primary float-right\" onclick=\"addSong($(this).parent().attr('id'))\">Add</button>" +
+      "<button type=\"button\" class=\"btn float-right sp_green_btn\" onclick=\"addSong($(this).parent().attr('id'))\">Add</button>" +
       "</li>"
     $("#results").append(html_out);
   }
@@ -235,6 +281,13 @@ socket.on('connect', function() {
   idGlob = id;
 
   socket.emit('member_connect', {partyid: id});
+
+  var name_request = {
+    "partyid": id,
+    "rtype": "getPartyName",
+    "data": ""
+  }
+  sendMessage(JSON.stringify(name_request));
 });
 socket.on('message', function(msg) {
   console.log(msg)
@@ -252,6 +305,8 @@ socket.on('message', function(msg) {
       setSongs(obj);
     } else if (obj.rtype == "redirectShutdown") {
       window.location = "/party-shutdown.html";
+    } else if (obj.rtype == "setPartyName") {
+      setPartyName(obj);
     }
   }
 });

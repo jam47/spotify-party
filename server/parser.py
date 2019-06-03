@@ -9,7 +9,7 @@ from server.API_Handler_Search import SearchHandler
 
 from flask_socketio import close_room, emit, join_room
 
-from server.a import socketio, app
+from server.a import socketio, hosts
 
 SILENT_TRACK_URI = "spotify:track:7cctPQS83y620UQtMd1ilL"
 partyids = {}
@@ -31,7 +31,8 @@ def parse(strMsg):
                     "auth":getRedirectUrl,
                     "getDevices":getDevices,
                     "getSongs":getCurrentSongsOrdered,
-                    "setAuthToken":proccessAuthenicationURL
+                    "setAuthToken":proccessAuthenicationURL,
+                    "getPartyName": getPartyName
                 }
                 function = switcher.get(msg["rtype"], lambda: print("Invalid type"))
                 return json.dumps(function(msg["partyid"], msg["data"]))
@@ -41,6 +42,12 @@ def parse(strMsg):
             return json.dumps(createRoom(msg["data"]))
         else:
             return json.dumps(redirect_shutdown())
+
+def getPartyName(partyid, data):
+    return {
+        "rtype": "setPartyName",
+        "data": partyids[partyid].party_name
+    }
 
 def redirect_shutdown():
     return {
@@ -61,7 +68,10 @@ def createRoom(room_name):
     join_room(code)
     return {
         "rtype":"roomCode",
-        "data":code
+        "data": {
+            "code": code,
+            "sid": "",
+        }
     }
 
 def closeRoom(partyid, data):
@@ -165,6 +175,9 @@ def removeInactivePlaylists():
         partyids[inactiveId].playbackHandler.delete_playlist()
         partyids[inactiveId].playbackHandler.remove_cache()
         socketio.close_room(inactiveId)
+        for host_sid in hosts:
+            if hosts[host_sid] == inactiveId:
+                hosts.pop(host_sid)
         partyids.pop(inactiveId)
         print("REMOVED INCACTIVE PARTY " + inactiveId)
 

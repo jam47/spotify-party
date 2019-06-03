@@ -31,17 +31,43 @@
 #results > li:hover{
     background-color:#0a421e;
 }
+#tracks {
+  position: absolute;
+  display: inline-block;
+  width: 100%;
+}
+
 #tracks > li:hover{
     background-color:#eeeeee;
 }
+
 #results > li{
     background:#191414;
-    color:#1db954;
+    color:white;
 }
 .nav-item.active{
     background:#000000;
     color:#ffffff;
 }
+.sp_green_btn {
+  color: white;
+  background-color: #1DB954;
+  padding: 4px;
+  box-shadow: 0 0 0 0.2rem #1DB954;
+}
+
+.sp_green_btn:hover {
+  color: white;
+  background-color: #1DB954;
+  box-shadow: 0 0 0 0.2rem #15843c;
+}
+
+.sp_green_btn:focus {
+  color: white;
+  background-color: #1DB954;
+  box-shadow: 0 0 0 0.2rem #15843c;
+}
+
 #filler{
     background:#191414;
     height:8px;
@@ -74,6 +100,7 @@ a:hover{
   margin-top: 6px;
   font-family: sans-serif;
 }
+
 
 
 .selected_device_arrow {
@@ -114,3 +141,62 @@ a:hover{
 .select-devices div:hover, .same-as-selected-device {
   background-color: #1DB954;
 }
+
+.input-style-div{
+  -moz-appearance: textfield-multiline;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 70%;
+  display: inline-block ;
+  box-shadow: 0 0 0 0.2rem #191414;
+  word-break: break-all;
+}
+
+.invite_mod_btn{
+  width: 100px;
+}
+
+.custom-modal-title{
+  font-family: "Gotham",sans-serif;
+}
+
+#party-name-div {
+  width: 300px;
+  font-family: "proxima_nova",sans-serif;
+  font-size: 1.5em;
+  overflow: hidden;
+}
+
+#party-name {
+  vertical-align: top;
+  text-align: left;
+  padding-top: 15px;
+  width: 100%;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#party-share-btn {
+  display: inline-block;
+}
+
+
+
+@keyframes backAndForth {
+  0% { transform: translateX(0); }
+  10% { transform: translateX(0); }
+  45% { transform: translateX(calc(-100% + 200px)); }
+  55% { transform: translateX(calc(-100% + 200px)); }
+  90% { transform: translateX(0); }
+  100% { transform: translateX(0); }
+}
+
+body { padding-bottom: 70px; }

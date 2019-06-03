@@ -9,6 +9,13 @@ socket.on('connect', function() {
   idGlob = id;
 
   socket.emit('member_connect', {partyid: id});
+
+  var name_request = {
+    "partyid": id,
+    "rtype": "getPartyName",
+    "data": ""
+  }
+  sendMessage(JSON.stringify(name_request));
 });
 socket.on('message', function(msg) {
   console.log(msg)
@@ -26,6 +33,8 @@ socket.on('message', function(msg) {
       setSongs(obj);
     } else if (obj.rtype == "redirectShutdown") {
       window.location = "/party-shutdown.html";
+    } else if (obj.rtype == "setPartyName") {
+      setPartyName(obj);
     }
   }
 });

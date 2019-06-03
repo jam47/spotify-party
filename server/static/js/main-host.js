@@ -31,6 +31,10 @@ socket.on('message', function(msg) {
         console.log("setting devices!")
         setDevices(obj);
       }
+    } else if (obj.rtype == "setPartyName") {
+      setPartyName(obj);
+    } else if (obj.rtype == "redirectShutdown") {
+      window.location = "/party-shutdown.html";
     }
   }
 });
@@ -275,7 +279,7 @@ function start() {
     }
     strAuthRequest = JSON.stringify(authRequest);
     sendMessage(strAuthRequest);
-  } else {
+    } else {
     console.log("Setting ID");
     var decodedCookie = decodeURIComponent(document.cookie);
     console.log(decodedCookie)
@@ -284,16 +288,37 @@ function start() {
     $("#parties").find(".1").addClass("active");
     $("#parties").find(".1").attr("id", id);
 
-    var authCode = url.searchParams.get("code");
-    authTokenData = {
-      "partyid": id,
-      "rtype": "setAuthToken",
-      "data": authCode
+    var error = url.searchParams.get("error");
+
+    if (error == null) {
+      var authCode = url.searchParams.get("code");
+      authTokenData = {
+        "partyid": id,
+        "rtype": "setAuthToken",
+        "data": authCode
+      }
+      strAuthTokenData = JSON.stringify(authTokenData);
+      sendMessage(strAuthTokenData);
+
+      var name_request = {
+        "partyid": id,
+        "rtype": "getPartyName",
+        "data": ""
+      }
+      sendMessage(JSON.stringify(name_request));
+      var unimportant = setInterval(() => {
+        getSongs(idGlob)
+      }, 2000);
+      setInterval(sendConnectionNotice, 3000);
+    } else {
+      closeRoom();
+      window.location = "/start-join-party.html"
     }
-    strAuthTokenData = JSON.stringify(authTokenData);
-    sendMessage(strAuthTokenData);
   }
-  var unimportant = setInterval(() => {
-    getSongs(idGlob)
-  }, 2000);
+
+
+}
+
+function sendConnectionNotice() {
+  socket.emit('host_connected', idGlob);
 }

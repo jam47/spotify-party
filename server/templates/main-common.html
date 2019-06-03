@@ -10,6 +10,7 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
+  <script type="text/javascript" src="{{ url_for('static',filename='js/qrcode.js') }}"></script>
   {% block js_file%}
   {% endblock %}
   <title>Spotify Party</title>
@@ -19,13 +20,17 @@
 {% endblock %}
   <div class="container-fluid" style="background:#ffffff; color:#191414;">
     <div class="row">
-      <div class="col-12 col-md-4 p-0">
+      <div class="col-12 col-md-5 p-0 ">
         <nav class="navbar" style="justify-content:flex-start; background:#191414;">
-
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#parties">
             <span class="material-icons" style="color:#1db954">menu</span>
           </button>
           <span class="navbar-brand" id="spotify-party-logo" style="color:#1db954">Spotify Party</span>
+          <div id="party-share-btn">
+            <button type="button" class="btn sp_green_btn" style="vertical-align:top" data-toggle="modal" data-target="#invite-popup">
+              Invite to Party
+            </button>
+          </div>
           <div class="collapse navbar-collapse" id="parties">
             <ul class="navbar-nav">
               <li class="nav-item" id="filler">
@@ -43,23 +48,24 @@
           </div>
         </nav>
       </div>
-
-      <div class="p-0 col-12 col-md-8">
-        <div id="right-top-bar" style="height:56px; color:#1db954; background:#191414;">
-
-          <div class="float-right" style="height:56px;">
-            {% block playback_icon %}
-            {% endblock %}
-            <button type="button" class="btn btn-primary" style="margin:9px;vertical-align:top" data-toggle="modal" data-target="#myModal">
-              Add song
-            </button>
+      <div class="p-0 col-12 col-md-7">
+        <div style="height:56px; color:#1db954; background:#191414;">
+          <div id="right-top-bar">
+            <div class="float-right" style="height:56px;">
+              {% block playback_icon %}
+              {% endblock %}
+              <button type="button" class="btn sp_green_btn" style="margin:9px;vertical-align:top" data-toggle="modal" data-target="#add-song-popup">
+                Add song
+              </button>
+            </div>
           </div>
-          <div class="modal" id="myModal">
+
+          <div class="modal" id="add-song-popup">
             <div class="modal-dialog">
               <div class="modal-content" style="background:#191414; color:#1db954">
 
                 <div class="modal-header">
-                  <h4 class="modal-title">Add Song</h4>
+                  <h4 class="modal-title custom-modal-title">Add Song</h4>
                   <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>
                 </div>
 
@@ -74,11 +80,44 @@
 
                   <ul class="list-group" id="results">
                     <li class="list-group-item" id="123">Song
-                      <button type="button" class="btn btn-primary float-right" onclick="addSong($(this).parent().attr('id'))">
+                      <button type="button" class="btn float-right sp_green_btn" onclick="addSong($(this).parent().attr('id'))">
                         Add
                       </button>
                     </li>
                   </ul>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="modal" id="invite-popup">
+            <div class="modal-dialog">
+              <div class="modal-content" style="background:#191414; color:#1db954">
+
+                <div class="modal-header">
+                  <h4 class="modal-title">Invite to Party </h4>
+                  <button type="button" class="close" style="color:#ffffff" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body" style="background:#1db954; color:#191414">
+                    <div class="list-group-item" style="display: flex; background-color: #191414;">
+                      <div id="party-id" class="input-style-div"> </div>
+                      <button class="btn sp_green_btn invite_mod_btn float-right" style="margin-left: 10px" onclick="copyID()"> Copy ID </button>
+                    </div>
+                    <div class="list-group-item" style="display: flex; background-color: #191414">
+                      <div id="join-url" class="input-style-div"></div>
+                      <button class="btn sp_green_btn invite_mod_btn float-right" style="margin-left: 10px" onclick="copyUrl()"> Copy Link </button>
+                    </div>
+                    <div class="list-group-item" style="background-color: #191414;" >
+                      <div id="join-qr-code" style="display: flex; justify-content: center; text-align: center; border-width: 10px ">
+
+                      </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -124,7 +163,6 @@
             </i>
           </li>
         </ul>
-      </div>
     </div>
   </div>
   </div>
