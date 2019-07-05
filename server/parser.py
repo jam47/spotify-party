@@ -4,12 +4,12 @@ import time
 
 import json
 
-from server.Room import PartyRoom
-from server.API_Handler_Search import SearchHandler
+from Room import PartyRoom
+from API_Handler_Search import SearchHandler
 
 from flask_socketio import close_room, emit, join_room
 
-from server.a import socketio, hosts
+from a import socketio, hosts
 
 SILENT_TRACK_URI = "spotify:track:7cctPQS83y620UQtMd1ilL"
 partyids = {}

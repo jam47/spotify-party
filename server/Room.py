@@ -1,5 +1,5 @@
-from server.API_Handler_Playback import PlaybackHandler
-from server.API_Handler_Search import SearchHandler
+from API_Handler_Playback import PlaybackHandler
+from API_Handler_Search import SearchHandler
 
 
 class PartyRoom:
