@@ -9,7 +9,7 @@ from API_Handler_Search import SearchHandler
 
 from flask_socketio import close_room, emit, join_room
 
-from a import socketio, hosts
+#from a import socketio, hosts
 
 SILENT_TRACK_URI = "spotify:track:7cctPQS83y620UQtMd1ilL"
 partyids = {}
@@ -174,7 +174,7 @@ def removeInactivePlaylists():
     for inactiveId in inactive:
         partyids[inactiveId].playbackHandler.delete_playlist()
         partyids[inactiveId].playbackHandler.remove_cache()
-        socketio.close_room(inactiveId)
+#        socketio.close_room(inactiveId)
         for host_sid in hosts:
             if hosts[host_sid] == inactiveId:
                 hosts.pop(host_sid)

@@ -70,7 +70,7 @@ def return_party_shutdown():
 
 
 app.debug = True
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = open("flask-secret-key").readline()
 socketio = SocketIO(app)
 
 
