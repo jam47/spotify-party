@@ -174,7 +174,7 @@ def removeInactivePlaylists():
     for inactiveId in inactive:
         partyids[inactiveId].playbackHandler.delete_playlist()
         partyids[inactiveId].playbackHandler.remove_cache()
-#        socketio.close_room(inactiveId)
+        #socketio.close_room(inactiveId)
         for host_sid in hosts:
             if hosts[host_sid] == inactiveId:
                 hosts.pop(host_sid)
