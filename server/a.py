@@ -6,14 +6,17 @@ import parser
 import threading
 import json
 import time
-from OpenSSL import SSL
+from flask_talisman import Talisman
 
-context = SSL.Context(SSL.TLSv1_2_METHOD)
-context.use_privatekey_file('server.key')
-context.use_certificate_file('server.crt')
+
+
 instance = 0
 
 app = Flask(__name__)
+
+talisman = Talisman(app)
+
+talisman.force_https
 
 main_host_js = Bundle("./js/main-common.js", "./js/main-host.js", output="./main-host-complete.js")
 main_member_js = Bundle("./js/main-common.js", "./js/main-member.js", output="./main-member-complete.js")
