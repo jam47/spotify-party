@@ -1,3 +1,4 @@
+
 //adapted from https://codepen.io/jryancard/pen/xYQNZG
 //Setup canvas, drawing functions
 
@@ -193,7 +194,7 @@ function sendMessage(msg) {
   socket.send(msg);
 }
 
-var socket = io.connect('https://' + document.domain + ':' + location.port);
+var socket = io.connect('https://' + document.domain + ':' + location.port, {secure: true});
 socket.on('connect', function() {
   socket.emit('my event', {
     data: 'I\'m connected!'

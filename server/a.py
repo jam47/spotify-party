@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send
 from flask_assets import Bundle, Environment
 from flask_socketio import join_room
-import parser
+import server.parser as parser
 import threading
 import json
 import time
@@ -56,10 +56,6 @@ def return_main_member():
     return render_template('main-member.html')
 
 
-
-@app.route('/index.js')
-def return_index_js():
-    return render_template('index.js')
 
 
 

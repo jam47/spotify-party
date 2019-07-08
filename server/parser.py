@@ -4,8 +4,8 @@ import time
 
 import json
 
-from Room import PartyRoom
-from API_Handler_Search import SearchHandler
+from server.Room import PartyRoom
+from server.API_Handler_Search import SearchHandler
 
 from flask_socketio import close_room, emit, join_room
 
