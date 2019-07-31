@@ -4,10 +4,11 @@
 <head>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+  <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
+  <script type="text/javascript" src="{{ url_for('static',filename='js/socketio.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
   <script type="text/javascript" src="{{ url_for('static',filename='js/qrcode.js') }}"></script>
@@ -35,15 +36,16 @@
             <ul class="navbar-nav">
               <li class="nav-item" id="filler">
               </li>
-              <li class="nav-item" id="1" onclick="setParty($(this))">
-                <a class="nav-link" href="#">Party 1</a>
-              </li>
-              <li class="nav-item" id="2" onclick="setParty($(this))">
-                <a class="nav-link" href="#">Party 2</a>
-              </li>
-              <li class="nav-item" id="3" onclick="setParty($(this))">
-                <a class="nav-link" href="#">Party 3</a>
-              </li>
+              <!--TODO: implement multiple party functionality-->
+              <!--<li class="nav-item" id="1" onclick="setParty($(this))">-->
+                <!--<a class="nav-link" href="#">Party 1</a>-->
+              <!--</li>-->
+              <!--<li class="nav-item" id="2" onclick="setParty($(this))">-->
+                <!--<a class="nav-link" href="#">Party 2</a>-->
+              <!--</li>-->
+              <!--<li class="nav-item" id="3" onclick="setParty($(this))">-->
+                <!--<a class="nav-link" href="#">Party 3</a>-->
+              <!--</li>-->
             </ul>
           </div>
         </nav>
@@ -79,11 +81,13 @@
                   </div>
 
                   <ul class="list-group" id="results">
+
+                    <!-- Format of results in add song search
                     <li class="list-group-item" id="123">Song
                       <button type="button" class="btn float-right sp_green_btn" onclick="addSong($(this).parent().attr('id'))">
                         Add
                       </button>
-                    </li>
+                    </li>-->
                   </ul>
                 </div>
 
@@ -130,6 +134,7 @@
         </div>
 
         <ul class="list-group" id="tracks">
+          <!-- Format of song item to be played
           <li class="list-group-item" id="41242421">First item
             <i class="material-icons float-right">
               <span class="thup" onclick="upvote($(this))">
@@ -140,28 +145,7 @@
               </span>
             </i>
           </li>
-          <li class="list-group-item" id="41262421">
-            First item
-            <i class="material-icons float-right">
-              <span class="thup" onclick="upvote($(this))">
-                thumb_up
-              </span>
-              <span class="thdn" onclick="downvote($(this))">
-                thumb_down
-              </span>
-            </i>
-          </li>
-          <li class="list-group-item" id="41247421">
-            First item
-            <i class="material-icons float-right">
-              <span class="thup" onclick="upvote($(this))">
-                thumb_up
-              </span>
-              <span class="thdn" onclick="downvote($(this))">
-                thumb_down
-              </span>
-            </i>
-          </li>
+          -->
         </ul>
     </div>
   </div>

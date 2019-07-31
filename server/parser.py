@@ -4,6 +4,8 @@ import time
 
 import json
 
+from spotipy import SpotifyException
+
 from server.Room import PartyRoom
 from server.API_Handler_Search import SearchHandler
 
@@ -259,7 +261,10 @@ def updateAllPlaylists():
                         partyids[partyId].paused = False
                         partyids[partyId].missingSong = False
                     elif partyids[partyId].playbackHandler.currently_playing_uri() != None and not partyids[partyId].playbackHandler.check_if_paused():
-                        partyids[partyId].playbackHandler.pause_playback()
+                        try :
+                            partyids[partyId].playbackHandler.pause_playback()
+                        except SpotifyException:
+                            print("attempted to pause playback whilst already paused due to spotify api delay")
                 else:
                     partyids[partyId].setInactive()
 

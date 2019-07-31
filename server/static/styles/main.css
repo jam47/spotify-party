@@ -1,3 +1,4 @@
+
 .nav-item{
     color:#1db954;
 }
@@ -188,6 +189,19 @@ a:hover{
   display: inline-block;
 }
 
+.song_to_play_details {
+    word-wrap: break-word;
+    width:70%;
+}
+
+.song_to_play_up_down_vote {
+    width:30%;
+}
+
+.song_to_play_container {
+    display: inline-flex !important;
+    width: 100%;
+}
 
 
 @keyframes backAndForth {
@@ -200,3 +214,4 @@ a:hover{
 }
 
 body { padding-bottom: 70px; }
+

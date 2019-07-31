@@ -14,10 +14,6 @@ instance = 0
 
 app = Flask(__name__)
 
-talisman = Talisman(app)
-
-talisman.force_https
-
 main_host_js = Bundle("./js/main-common.js", "./js/main-host.js", output="./main-host-complete.js")
 main_member_js = Bundle("./js/main-common.js", "./js/main-member.js", output="./main-member-complete.js")
 
