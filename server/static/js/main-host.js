@@ -1,6 +1,6 @@
 var playing = false
 
-var socket = io.connect('https://' + document.domain + ':' + location.port);
+var socket = io.connect('http://' + document.domain + ':' + location.port);
 socket.on('connect', function() {
   socket.emit('my event', {
     data: 'I\'m connected!'
@@ -12,7 +12,7 @@ socket.on('message', function(msg) {
     if (msg.rtype == "searchResult") {
       setSearch(msg);
     }
-    console.log("Received: " + msg);
+    console.log("Received: " + msg);;
     var obj = JSON.parse(msg);
     if (obj.rtype == "searchResult") {
       console.log("Setting search")

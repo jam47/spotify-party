@@ -101,6 +101,13 @@ class PlaybackHandler:
                 return playlist.get("id")
         return None
 
+    def get_active_device(self):
+        devices = self.sp.devices()
+        for device in devices["devices"]:
+            if device["is_active"] :
+                return device["id"]
+        return None
+
     def start_playback(self, offset = None, device_id = None):
         self.refresh_token_if_necessary()
         playlist_uri = self.playlist_id
@@ -166,7 +173,7 @@ class PlaybackHandler:
 
     def pause_playback(self):
         self.refresh_token_if_necessary()
-        self.sp.pause_playback()
+        self.sp.pause_playback(self.get_active_device())
 
     def check_if_paused(self):
         currentlyPlaying = self.sp.current_playback()

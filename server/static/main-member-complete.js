@@ -62,7 +62,7 @@ function upvote(e) {
       partyid: idGlob,
       rtype: "sendVote",
       data: {
-        uri: e.parent().parent().attr("id"),
+        uri: e.parent().parent().parent().attr("id"),
         voteMod: -1.
       }
     }
@@ -78,7 +78,7 @@ function upvote(e) {
       rtype: "sendVote",
 
       data: {
-        uri: e.parent().parent().attr("id"),
+        uri: e.parent().parent().parent().attr("id"),
         voteMod: 1 + (e.next().css("color") == "rgb(255, 0, 0)")
 
       }
@@ -99,7 +99,7 @@ function downvote(e) {
       partyid: idGlob,
       rtype: "sendVote",
       data: {
-        uri: e.parent().parent().attr("id"),
+        uri: e.parent().parent().parent().attr("id"),
         voteMod: 1
       }
     }
@@ -114,7 +114,7 @@ function downvote(e) {
       partyid: idGlob,
       rtype: "sendVote",
       data: {
-        uri: e.parent().parent().attr("id"),
+        uri: e.parent().parent().parent().attr("id"),
         voteMod: -1 - (e.prev().css("color") == "rgb(0, 255, 0)")
       }
     }
@@ -205,16 +205,16 @@ function setSongs(e) {
     myNode[0].removeChild(myNode[0].children[0]);
   }
   for (i in e.data) {
-    var html_out = "<li class='list-group-item' id=" + e.data[i].uri + ">" +
-      e.data[i].name + " - " + e.data[i].artists + " (" + e.data[i].album + ")" +
+    var html_out = "<li class='song_to_play_container list-group-item' id=" + e.data[i].uri + "><div class=\"song_to_play_details\">" +
+      e.data[i].name + " - " + e.data[i].artists + " (" + e.data[i].album + ") </div>" +
       "<i class=\"material-icons float-right\">" +
-      "<span class=\"thup\" onclick=\"upvote($(this))\">" +
+      "<div class=\"song_to_play_up_down_vote\"><span class=\"thup\" onclick=\"upvote($(this))\">" +
       " thumb_up" +
       "</span>" +
       "<span class=\"thdn\" onclick=\"downvote($(this))\">" +
       " thumb_down" +
       "</span>" +
-      "</i>" +
+      "</i></div>" +
       "</li>"
     $("#tracks").append(html_out);
     if (e.data[i].userVote == 1) {
@@ -270,7 +270,7 @@ function addSong(e) {
   }
 }
 
-var socket = io.connect('https://' + document.domain + ':' + location.port);
+var socket = io.connect('http://' + document.domain + ':' + location.port);
 socket.on('connect', function() {
   var unimportant = setInterval(() => {
     getSongs(idGlob)
