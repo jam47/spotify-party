@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send
 from flask_assets import Bundle, Environment
 from flask_socketio import join_room
-import server.parser as parser
+import parser
 import threading
 import json
 import time
@@ -120,12 +120,20 @@ def main_loop():
 
 def verify_connections():
     while True:
+        hostsRemoved = []
         for host in hosts:
             if not hosts[host]["connection_verified"]:
-                parser.partyids[hosts[host]["party_id"]].setInactive()
+                partyId = hosts[host]["party_id"]
+                try:
+                    parser.partyids[partyId].setInactive()
+                except KeyError:
+                    print("party id already popped" + partyId)
+                    hostsRemoved.append(host)
             else:
                 hosts[host]["connection_verified"] = False
-        time.sleep(20)
+        for host in hostsRemoved:
+            hosts.pop(host)        
+        time.sleep(1800)
 
 if __name__ == '__main__':
     mainLoopThread = threading.Thread(target=main_loop)
