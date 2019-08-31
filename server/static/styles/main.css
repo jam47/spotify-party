@@ -124,6 +124,10 @@ a:hover{
   border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
   cursor: pointer;
   user-select: none;
+  z-index:99;
+  display: block;
+  -webkit-transform: translate3d(0, 0, 0);
+  overflow: visible;
 }
 
 .select-devices {

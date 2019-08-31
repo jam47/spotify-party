@@ -6,8 +6,8 @@ import json
 
 from spotipy import SpotifyException
 
-from server.Room import PartyRoom
-from server.API_Handler_Search import SearchHandler
+from Room import PartyRoom
+from API_Handler_Search import SearchHandler
 
 from flask_socketio import close_room, emit, join_room
 
@@ -174,14 +174,20 @@ def checkIfPartyExists(partyid):
 def removeInactivePlaylists():
     inactive = getInactivePlaylistIds()
     for inactiveId in inactive:
-        partyids[inactiveId].playbackHandler.delete_playlist()
-        partyids[inactiveId].playbackHandler.remove_cache()
+        try:
+            if partyids[inactiveId].playbackHandler.check_playlist_exists():
+                partyids[inactiveId].playbackHandler.delete_playlist()
+            
+            partyids[inactiveId].playbackHandler.remove_cache()
+        except TypeError:
+            print("tried to remove a playlist but no token existed")
+        
         #socketio.close_room(inactiveId)
-        for host_sid in hosts:
-            if hosts[host_sid] == inactiveId:
-                hosts.pop(host_sid)
+        #for host_sid in hosts:
+        #    if hosts[host_sid] == inactiveId:
+        #        hosts.pop(host_sid)
         partyids.pop(inactiveId)
-        print("REMOVED INCACTIVE PARTY " + inactiveId)
+        print("REMOVED INACTIVE PARTY " + inactiveId)
 
 def getInactivePlaylistIds():
     inactive = []
@@ -247,8 +253,9 @@ def updateAllPlaylists():
                         partyids[partyId].setInactive()
             else:
                 actual_uri_playing = partyids[partyId].playbackHandler.currently_playing_uri()
+                #print("not expected uri playing , playing " + actual_uri_playing)
                 if actual_uri_playing == SILENT_TRACK_URI or actual_uri_playing == None:
-                    if partyids[partyId].getNumberOfUnplayedSongs() >= 2 and partyids[partyId].playbackHandler.currently_playing_uri() != None:
+                    if partyids[partyId].getNumberOfUnplayedSongs() >= 2 and partyids[partyId].playbackHandler.get_active_device() != None:
                         partyids[partyId].playbackHandler.remove_song(SILENT_TRACK_URI)
                         firstSongToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()
                         secondSongToPlay = partyids[partyId].getMostUpvotedNotPlayedToPlay()
